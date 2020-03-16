@@ -105,3 +105,9 @@ task prepareGooglePlayServices(type: Copy) {
         }
     }
 }
+
+tasks.whenTaskAdded { task ->
+    if(task.name.matches("\\.*process\\w+GoogleServices\$")){
+        task.dependsOn prepareGooglePlayServices
+    }
+}
