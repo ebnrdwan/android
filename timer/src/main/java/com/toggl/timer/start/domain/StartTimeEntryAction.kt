@@ -6,6 +6,7 @@ import com.toggl.timer.common.domain.TimerAction
 sealed class StartTimeEntryAction {
     object StartTimeEntryButtonTapped : StartTimeEntryAction()
     object StopTimeEntryButtonTapped : StartTimeEntryAction()
+    object ToggleBillable : StartTimeEntryAction()
     data class TimeEntryDescriptionChanged(val description: String) : StartTimeEntryAction()
     data class TimeEntryUpdated(val id: Long, val timeEntry: TimeEntry) : StartTimeEntryAction()
     data class TimeEntryStarted(val startedTimeEntry: TimeEntry, val stoppedTimeEntry: TimeEntry?) :
@@ -30,4 +31,5 @@ fun StartTimeEntryAction.formatForDebug() =
         is StartTimeEntryAction.TimeEntryDescriptionChanged -> "Description changed to $description"
         is StartTimeEntryAction.TimeEntryUpdated -> "Time entry with id $id updated"
         is StartTimeEntryAction.TimeEntryStarted -> "Time entry started with id $startedTimeEntry.id"
+        StartTimeEntryAction.ToggleBillable -> "Billable toggled in the running time entry"
     }

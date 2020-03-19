@@ -6,6 +6,7 @@ import com.toggl.architecture.core.SettableValue
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.repository.interfaces.TimeEntryRepository
+import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
 import com.toggl.timer.extensions.replaceTimeEntryWithId
@@ -48,6 +49,13 @@ class StartTimeEntryReducer @Inject constructor(
                         action.stoppedTimeEntry
                     )
                 )
+                noEffect()
+            }
+            StartTimeEntryAction.ToggleBillable -> {
+                state.value = StartTimeEntryState.editableTimeEntry.modify(state.value) {
+                    it.copy(billable = !it.billable)
+                }
+
                 noEffect()
             }
         }
