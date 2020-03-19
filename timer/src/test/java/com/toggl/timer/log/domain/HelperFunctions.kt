@@ -9,6 +9,3 @@ fun createInitialState(timeEntries: List<TimeEntry> = listOf()) =
         projects = mapOf(),
         editedTimeEntry = null
     )
-
-fun TimeEntriesLogState.toSettableValue(setFunction: (TimeEntriesLogState) -> Unit) =
-    SettableValue({ this }, setFunction)
