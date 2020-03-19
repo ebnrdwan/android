@@ -51,7 +51,7 @@ class StartTimeEntryFragment : Fragment(R.layout.start_time_entry_fragment) {
         lifecycleScope.launch {
 
             store.state
-                .map { it.editedDescription }
+                .map { it.editableTimeEntry.description }
                 .distinctUntilChanged()
                 .onEach {
                     if (time_entry_description?.text.toString() != it) {

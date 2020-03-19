@@ -6,12 +6,11 @@ import com.toggl.repository.interfaces.TimeEntryRepository
 
 class StartTimeEntryEffect<Action>(
     private val repository: TimeEntryRepository,
-    private val description: String,
-    private val workspaceId: Long,
+    private val timeEntry: EditableTimeEntry,
     private val mapFn: (StartTimeEntryResult) -> Action
 ) : Effect<Action> {
     override suspend fun execute(): Action? =
         repository
-            .startTimeEntry(workspaceId, description)
+            .startTimeEntry(timeEntry.workspaceId, timeEntry.description)
             .run(mapFn)
 }

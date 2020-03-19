@@ -44,7 +44,7 @@ class TimeEntryTappedActionTests : FreeSpec({
             var state = initialState
             val settableValue = state.toSettableValue { state = it }
             reducer.reduce(settableValue, TimeEntriesLogAction.TimeEntryTapped(1))
-            state.editedTimeEntry shouldBe testTe
+            state.editableTimeEntry!!.ids.single() shouldBe testTe.id
         }
     }
 })

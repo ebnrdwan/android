@@ -23,13 +23,15 @@ class StartTimeEntryReducer @Inject constructor(
             StartTimeEntryAction.StopTimeEntryButtonTapped ->
                 effect(StopTimeEntryEffect(repository))
             StartTimeEntryAction.StartTimeEntryButtonTapped -> {
-                val description = state.value.editedDescription
+                val editableTimeEntry = state.value.editableTimeEntry
                 val workspace = state.value.workspaces.values.single()
-                state.value = state.value.copy(editedDescription = "")
-                startTimeEntry(workspace.id, description, repository)
+                state.value = state.value.copy(editableTimeEntry = EditableTimeEntry.empty(workspace.id))
+                startTimeEntry(editableTimeEntry, repository)
             }
             is StartTimeEntryAction.TimeEntryDescriptionChanged -> {
-                state.value = state.value.copy(editedDescription = action.description)
+                state.value = StartTimeEntryState.editableTimeEntry.modify(state.value) {
+                    it.copy(description = action.description)
+                }
                 noEffect()
             }
             is StartTimeEntryAction.TimeEntryUpdated -> {
@@ -50,9 +52,9 @@ class StartTimeEntryReducer @Inject constructor(
             }
         }
 
-    private fun startTimeEntry(workspaceId: Long, description: String, repository: TimeEntryRepository) =
+    private fun startTimeEntry(editableTimeEntry: EditableTimeEntry, repository: TimeEntryRepository) =
         effect(
-            StartTimeEntryEffect(repository, description, workspaceId) {
+            StartTimeEntryEffect(repository, editableTimeEntry) {
                 StartTimeEntryAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
             }
         )

@@ -13,13 +13,20 @@ data class TimerState(
     val localState: LocalState
 ) {
     data class LocalState internal constructor(
-        internal val editedDescription: String,
-        internal val editedTimeEntry: TimeEntry?
+        internal val editViewTimeEntry: EditableTimeEntry?,
+        internal val startViewTimeEntry: EditableTimeEntry
     ) {
-        constructor() : this("", null)
+        constructor(defaultWorkspace: Workspace) : this(
+            editViewTimeEntry = null,
+            startViewTimeEntry = EditableTimeEntry.empty(defaultWorkspace.id)
+        )
 
         companion object
     }
 
     companion object
 }
+
+
+fun TimerState.LocalState.getRunningTimeEntryWorkspaceId() =
+    this.startViewTimeEntry.workspaceId
