@@ -27,6 +27,5 @@ data class TimerState(
     companion object
 }
 
-
 fun TimerState.LocalState.getRunningTimeEntryWorkspaceId() =
     this.startViewTimeEntry.workspaceId

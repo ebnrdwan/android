@@ -17,7 +17,7 @@ class FeatureAvailabilityReducerTests : FreeSpec({
     "The FeatureAvailabilityReducer" - {
         "For non premium actions" - {
             val state = AppState()
-            val settableValue = state.toSettableValue {  }
+            val settableValue = state.toSettableValue { }
             val nonPremiumActions = Gen.appAction().constants().filterNot(::actionIsPremium)
 
             "forwards the action to the child reducer" - {
@@ -43,7 +43,7 @@ class FeatureAvailabilityReducerTests : FreeSpec({
                 val state = AppState().copy(
                     workspaces = mapOf(1L to Workspace(1, "Auto created workspace", listOf(WorkspaceFeature.Pro)))
                 )
-                val settableValue = state.toSettableValue {  }
+                val settableValue = state.toSettableValue { }
                 val spyReducer = spyk<Reducer<AppState, AppAction>>()
                 val featureAvailabilityReducer = FeatureAvailabilityReducer(spyReducer)
 
@@ -56,7 +56,7 @@ class FeatureAvailabilityReducerTests : FreeSpec({
                 val state = AppState().copy(
                     workspaces = mapOf(1L to Workspace(1, "Auto created workspace", listOf()))
                 )
-                val settableValue = state.toSettableValue {  }
+                val settableValue = state.toSettableValue { }
                 val spyReducer = spyk<Reducer<AppState, AppAction>>()
                 val featureAvailabilityReducer = FeatureAvailabilityReducer(spyReducer)
 

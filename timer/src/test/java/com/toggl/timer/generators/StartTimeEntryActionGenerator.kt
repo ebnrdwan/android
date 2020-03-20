@@ -5,10 +5,9 @@ import com.toggl.timer.start.domain.StartTimeEntryAction
 import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.FreeSpec
-import io.kotlintest.specs.WordSpec
 import kotlin.random.Random
 
-fun Gen.Companion.startTimeEntryAction() : Gen<StartTimeEntryAction> =
+fun Gen.Companion.startTimeEntryAction(): Gen<StartTimeEntryAction> =
     object : Gen<StartTimeEntryAction> {
         private val allValues = listOf(
             StartTimeEntryAction.StartTimeEntryButtonTapped,

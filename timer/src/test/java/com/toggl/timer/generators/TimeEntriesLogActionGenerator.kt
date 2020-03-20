@@ -6,10 +6,9 @@ import com.toggl.timer.log.domain.TimeEntriesLogAction
 import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.properties.Gen
 import io.kotlintest.specs.FreeSpec
-import io.kotlintest.specs.WordSpec
 import kotlin.random.Random
 
-fun Gen.Companion.timeEntriesLogAction() : Gen<TimeEntriesLogAction> =
+fun Gen.Companion.timeEntriesLogAction(): Gen<TimeEntriesLogAction> =
     object : Gen<TimeEntriesLogAction> {
         private val allValues = listOf(
             TimeEntriesLogAction.ContinueButtonTapped(0),
@@ -27,7 +26,6 @@ fun Gen.Companion.timeEntriesLogAction() : Gen<TimeEntriesLogAction> =
             allValues[Random.nextInt(allValues.size)]
         }
     }
-
 
 class TimeEntriesLogActionGeneratorTests : FreeSpec({
     "The time entries log action generator's constants are exhaustive" - {

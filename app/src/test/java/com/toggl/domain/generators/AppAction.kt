@@ -7,10 +7,12 @@ import com.toggl.models.domain.Workspace
 import com.toggl.models.validation.ApiToken
 import com.toggl.onboarding.domain.actions.OnboardingAction
 import com.toggl.timer.generators.timerAction
+import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.properties.Gen
+import io.kotlintest.specs.FreeSpec
 import kotlin.random.Random
 
-fun Gen.Companion.onboardingAction() : Gen<OnboardingAction> =
+fun Gen.Companion.onboardingAction(): Gen<OnboardingAction> =
     object : Gen<OnboardingAction> {
         private val allValues = listOf(
             OnboardingAction.LoginTapped,
@@ -27,8 +29,7 @@ fun Gen.Companion.onboardingAction() : Gen<OnboardingAction> =
         }
     }
 
-
-fun Gen.Companion.appAction() : Gen<AppAction> =
+fun Gen.Companion.appAction(): Gen<AppAction> =
     object : Gen<AppAction> {
         private val allValues = sequence {
             yield(AppAction.Load)

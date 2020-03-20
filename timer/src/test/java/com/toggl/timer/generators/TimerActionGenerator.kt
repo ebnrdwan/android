@@ -6,7 +6,7 @@ import io.kotlintest.properties.Gen
 import io.kotlintest.specs.FreeSpec
 import kotlin.random.Random
 
-fun Gen.Companion.timerAction() : Gen<TimerAction> =
+fun Gen.Companion.timerAction(): Gen<TimerAction> =
     object : Gen<TimerAction> {
 
         private val allValues = sequence {
