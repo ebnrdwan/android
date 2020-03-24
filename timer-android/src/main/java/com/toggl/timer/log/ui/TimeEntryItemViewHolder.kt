@@ -23,12 +23,13 @@ class TimeEntryItemViewHolder(itemView: View, private val onContinueTappedListen
         description.isVisible = hasDescription
         description.text = item.description
 
-        if (item.project == null) {
+        val itemProject = item.project
+        if (itemProject == null) {
             project.isVisible = false
         } else {
             project.isVisible = true
-            project.text = item.project.name
-            project.setTextColor(item.project.color.toColorInt())
+            project.text = itemProject.name
+            project.setTextColor(itemProject.color.toColorInt())
         }
 
         duration.text = item.duration.formatForDisplaying()

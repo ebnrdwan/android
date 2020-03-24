@@ -2,9 +2,9 @@ package com.toggl.environment.di
 
 import android.content.Context
 import com.toggl.environment.services.analytics.AnalyticsService
-import com.toggl.environment.services.analytics.AppCenterAnalyticsService
+import com.toggl.environment.analytics.AppCenterAnalyticsService
 import com.toggl.environment.services.analytics.CompositeAnalyticsService
-import com.toggl.environment.services.analytics.FirebaseAnalyticsService
+import com.toggl.environment.analytics.FirebaseAnalyticsService
 import com.toggl.environment.services.time.ThreeTenTimeService
 import com.toggl.environment.services.time.TimeService
 import dagger.Module
@@ -28,9 +28,11 @@ class EnvironmentModule {
 
     @Provides
     @Singleton
-    fun firebaseAnalyticsService(context: Context) = FirebaseAnalyticsService(context)
+    fun firebaseAnalyticsService(context: Context) =
+        FirebaseAnalyticsService(context)
 
     @Provides
     @Singleton
-    fun appCenterAnalyticsService() = AppCenterAnalyticsService()
+    fun appCenterAnalyticsService() =
+        AppCenterAnalyticsService()
 }

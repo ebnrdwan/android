@@ -1,11 +1,14 @@
-package com.toggl.environment.services.analytics
+package com.toggl.environment.analytics
 
 import android.content.Context
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.toggl.environment.services.analytics.AnalyticsService
+import com.toggl.environment.services.analytics.Event
 import javax.inject.Inject
 
-class FirebaseAnalyticsService @Inject constructor(context: Context) : AnalyticsService {
+class FirebaseAnalyticsService @Inject constructor(context: Context) :
+    AnalyticsService {
     private val firebaseAnalytics = FirebaseAnalytics.getInstance(context)
 
     override fun track(event: Event) =

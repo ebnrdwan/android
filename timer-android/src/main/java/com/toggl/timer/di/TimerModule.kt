@@ -6,9 +6,9 @@ import com.toggl.architecture.core.pullback
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.common.domain.TimerReducer
 import com.toggl.timer.common.domain.TimerState
+import com.toggl.timer.log.domain.TimeEntriesLogState
 import com.toggl.timer.log.domain.TimeEntriesLogAction
 import com.toggl.timer.log.domain.TimeEntriesLogReducer
-import com.toggl.timer.log.domain.TimeEntriesLogState
 import com.toggl.timer.start.domain.StartTimeEntryAction
 import com.toggl.timer.start.domain.StartTimeEntryReducer
 import com.toggl.timer.start.domain.StartTimeEntryState

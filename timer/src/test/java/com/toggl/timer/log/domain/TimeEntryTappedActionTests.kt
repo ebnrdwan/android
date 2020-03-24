@@ -4,7 +4,6 @@ import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.toSettableValue
 import io.kotlintest.properties.assertAll
-import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 import io.mockk.mockk

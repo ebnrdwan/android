@@ -25,12 +25,13 @@ class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListe
         description.text = item.description
         groupCount.text = "${item.timeEntryIds.size}"
 
-        if (item.project == null) {
+        val itemProject = item.project
+        if (itemProject == null) {
             project.isVisible = false
         } else {
             project.isVisible = true
-            project.text = item.project.name
-            project.setTextColor(item.project.color.toColorInt())
+            project.text = itemProject.name
+            project.setTextColor(itemProject.color.toColorInt())
         }
 
         duration.text = item.duration.formatForDisplaying()
