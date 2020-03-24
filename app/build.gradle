@@ -57,12 +57,12 @@ dependencies {
     implementation project(':calendar')
     implementation project(':common-android')
     implementation project(':database-android')
-    implementation project(':environment')
+    implementation project(':environment-android')
     implementation project(':models')
     implementation project(':onboarding')
     implementation project(':reports')
     implementation project(':repository')
-    implementation project(':timer')
+    implementation project(':timer-android')
 
     implementation Libs.Kotlin.stdlib
     implementation Libs.Dagger.dagger
@@ -81,6 +81,7 @@ dependencies {
     testImplementation Libs.Test.mockk
     testImplementation Libs.Test.kotlinTest
     testImplementation Libs.Test.kotlinTestJunit
+
     androidTestImplementation Libs.AndroidX.Test.runner
     androidTestImplementation Libs.AndroidX.Test.espressoCore
 }

@@ -1,68 +1,24 @@
 import com.toggl.buildsrc.Libs
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'de.mannodermaus.android-junit5'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
-
-android {
-    compileSdkVersion buildConfig.compileSdk
-
-    defaultConfig {
-        minSdkVersion buildConfig.minSdk
-        targetSdkVersion buildConfig.targetSdk
-        versionCode buildConfig.versionCode
-        versionName buildConfig.versionName
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles 'consumer-rules.pro'
-    }
-
-    testOptions {
-        unitTests.all {
-            useJUnitPlatform()
-        }
-    }
-
-    buildTypes {
-        adhoc {}
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
-}
-
-
 dependencies {
-    implementation project(':architecture')
-    implementation project(':common-android')
-    implementation project(':repository')
-    implementation project(':models')
+    api project(':architecture')
+    api project(':models')
+    api project(':repository')
 
     implementation Libs.Kotlin.stdlib
-    implementation Libs.AndroidX.Lifecycle.extensions
-    implementation Libs.AndroidX.Lifecycle.viewModel
-    implementation Libs.Dagger.dagger
-    kapt Libs.Dagger.compiler
     implementation Libs.Arrow.optics
     implementation Libs.Arrow.syntax
+    implementation Libs.Dagger.dagger
+    kapt Libs.Dagger.compiler
     kapt Libs.Arrow.meta
 
     testImplementation (Libs.threeTen) {
         exclude group:'com.jakewharton.threetenabp', module:'threetenabp'
     }
+
     testImplementation Libs.Test.Jupiter.api
     testRuntimeOnly Libs.Test.Jupiter.engine
     testRuntimeOnly Libs.Test.Jupiter.params
@@ -71,7 +27,7 @@ dependencies {
     testImplementation Libs.Test.mockk
     testImplementation Libs.Test.kotlinTest
     testImplementation Libs.Test.kotlinTestJunit
-
-    androidTestImplementation Libs.AndroidX.Test.runner
-    androidTestImplementation Libs.AndroidX.Test.espressoCore
 }
+
+sourceCompatibility = "8"
+targetCompatibility = "8"

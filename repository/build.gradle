@@ -1,31 +1,11 @@
 import com.toggl.buildsrc.Libs
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
 
 kapt {
     correctErrorTypes = true
     useBuildCache = true
-}
-
-android {
-    compileSdkVersion buildConfig.compileSdk
-
-    defaultConfig {
-        minSdkVersion buildConfig.minSdk
-        targetSdkVersion buildConfig.targetSdk
-        versionCode buildConfig.versionCode
-        versionName buildConfig.versionName
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles 'consumer-rules.pro'
-    }
-
-    buildTypes {
-        adhoc {}
-    }
 }
 
 dependencies {
@@ -35,11 +15,6 @@ dependencies {
 
     implementation Libs.Kotlin.stdlib
     api Libs.Coroutines.core
-    api Libs.Coroutines.android
-    api Libs.AndroidX.Lifecycle.viewModel
     implementation Libs.Dagger.dagger
     kapt Libs.Dagger.compiler
-
-    androidTestImplementation Libs.AndroidX.Test.runner
-    androidTestImplementation Libs.AndroidX.Test.espressoCore
 }
