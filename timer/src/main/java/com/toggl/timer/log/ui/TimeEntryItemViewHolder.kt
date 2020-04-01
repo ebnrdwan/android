@@ -12,6 +12,7 @@ class TimeEntryItemViewHolder(itemView: View, private val onContinueTappedListen
     : TimeEntryLogViewHolder(itemView) {
     private val addDescriptionLabel = itemView.findViewById<View>(R.id.add_description_label)
     private val project = itemView.findViewById<TextView>(R.id.project_label)
+    private val client = itemView.findViewById<TextView>(R.id.client_label)
     private val description = itemView.findViewById<TextView>(R.id.description)
     private val duration = itemView.findViewById<TextView>(R.id.duration)
     private val continueButton = itemView.findViewById<View>(R.id.continue_button)
@@ -24,13 +25,11 @@ class TimeEntryItemViewHolder(itemView: View, private val onContinueTappedListen
         description.isVisible = hasDescription
         description.text = item.description
 
-        if (item.project == null) {
-            project.isVisible = false
-        } else {
-            project.isVisible = true
+        if (item.project != null) {
             project.text = item.project.name
             project.setTextColor(item.project.color.toColorInt())
         }
+        project.isVisible = item.project == null
 
         billableIcon.isVisible = item.billable
 

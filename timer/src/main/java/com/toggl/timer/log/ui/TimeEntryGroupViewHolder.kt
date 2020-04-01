@@ -12,6 +12,7 @@ class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListe
     : TimeEntryLogViewHolder(itemView) {
     private val addDescriptionLabel = itemView.findViewById<View>(R.id.add_description_label)
     private val project = itemView.findViewById<TextView>(R.id.project_label)
+    private val client = itemView.findViewById<TextView>(R.id.client_label)
     private val description = itemView.findViewById<TextView>(R.id.description)
     private val duration = itemView.findViewById<TextView>(R.id.duration)
     private val groupCount = itemView.findViewById<TextView>(R.id.group_count)
@@ -26,13 +27,11 @@ class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListe
         description.text = item.description
         groupCount.text = "${item.timeEntryIds.size}"
 
-        if (item.project == null) {
-            project.isVisible = false
-        } else {
-            project.isVisible = true
+        if (item.project != null) {
             project.text = item.project.name
             project.setTextColor(item.project.color.toColorInt())
         }
+        project.isVisible = item.project == null
 
         billableIcon.isVisible = item.billable
 
