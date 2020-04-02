@@ -6,6 +6,7 @@ fun createInitialState(timeEntries: List<TimeEntry> = listOf(), expandedGroupIds
     TimeEntriesLogState(
         timeEntries = timeEntries.associateBy { it.id },
         projects = mapOf(),
+        clients = mapOf(),
         editableTimeEntry = null,
         expandedGroupIds = expandedGroupIds
     )
