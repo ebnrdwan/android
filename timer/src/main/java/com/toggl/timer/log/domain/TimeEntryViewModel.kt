@@ -11,6 +11,7 @@ data class FlatTimeEntryViewModel(
     val startTime: OffsetDateTime,
     val duration: Duration,
     val project: ProjectViewModel?,
+    val client: ClientViewModel?,
     val billable: Boolean
 ) : TimeEntryViewModel()
 
@@ -18,6 +19,11 @@ data class ProjectViewModel(
     val id: Long,
     val name: String,
     val color: String
+)
+
+data class ClientViewModel(
+    val id: Long,
+    val name: String
 )
 
 data class DayHeaderViewModel(
@@ -32,5 +38,6 @@ data class TimeEntryGroupViewModel(
     val description: String,
     val duration: Duration,
     val project: ProjectViewModel?,
+    val client: ClientViewModel?,
     val billable: Boolean
 ) : TimeEntryViewModel()

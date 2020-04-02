@@ -9,6 +9,7 @@ fun mapAppStateToTimerState(appState: AppState): TimerState =
     TimerState(
         appState.timeEntries,
         appState.projects,
+        appState.clients,
         appState.workspaces,
         appState.timerLocalState
     )

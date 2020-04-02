@@ -1,6 +1,7 @@
 package com.toggl.timer.log.domain
 
 import com.toggl.environment.services.time.TimeService
+import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import org.threeten.bp.LocalDate
@@ -11,6 +12,7 @@ private const val timeEntriesLogHeaderTimeFormat = "eee, dd MMM"
 fun timeEntriesLogSelector(
     timeEntries: Map<Long, TimeEntry>,
     projects: Map<Long, Project>,
+    clients: Map<Long, Client>,
     timeService: TimeService,
     todayString: String,
     yesterdayString: String,
@@ -46,10 +48,10 @@ fun timeEntriesLogSelector(
     }
 
     suspend fun SequenceScope<TimeEntryViewModel>.yieldFlatTimeEntry(timeEntry: TimeEntry) =
-        yield(timeEntry.toFlatTimeEntryViewModel(projects))
+        yield(timeEntry.toFlatTimeEntryViewModel(projects, clients))
 
     suspend fun SequenceScope<TimeEntryViewModel>.yieldTimeEntryGroup(isExpanded: Boolean, timeEntries: List<TimeEntry>) =
-        yield(timeEntries.toTimeEntryGroupViewModel(timeEntries.first().similarityHashCode(), isExpanded, projects))
+        yield(timeEntries.toTimeEntryGroupViewModel(timeEntries.first().similarityHashCode(), isExpanded, projects, clients))
 
     return timeEntries.values
         .filter { it.duration != null && !it.isDeleted }

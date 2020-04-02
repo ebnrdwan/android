@@ -29,7 +29,12 @@ class TimeEntryItemViewHolder(itemView: View, private val onContinueTappedListen
             project.text = item.project.name
             project.setTextColor(item.project.color.toColorInt())
         }
-        project.isVisible = item.project == null
+        project.isVisible = item.project != null
+
+        if (item.client != null) {
+            client.text = item.client.name
+        }
+        client.isVisible = item.client != null
 
         billableIcon.isVisible = item.billable
 
