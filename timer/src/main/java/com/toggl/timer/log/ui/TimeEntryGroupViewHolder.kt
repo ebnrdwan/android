@@ -1,5 +1,8 @@
 package com.toggl.timer.log.ui
 
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.TextView
 import androidx.core.graphics.toColorInt
@@ -12,7 +15,6 @@ class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListe
     : TimeEntryLogViewHolder(itemView) {
     private val addDescriptionLabel = itemView.findViewById<View>(R.id.add_description_label)
     private val project = itemView.findViewById<TextView>(R.id.project_label)
-    private val client = itemView.findViewById<TextView>(R.id.client_label)
     private val description = itemView.findViewById<TextView>(R.id.description)
     private val duration = itemView.findViewById<TextView>(R.id.duration)
     private val groupCount = itemView.findViewById<TextView>(R.id.group_count)
@@ -27,16 +29,19 @@ class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListe
         description.text = item.description
         groupCount.text = "${item.timeEntryIds.size}"
 
+        val projectDescription = SpannableStringBuilder()
         if (item.project != null) {
-            project.text = item.project.name
-            project.setTextColor(item.project.color.toColorInt())
+            projectDescription.append(item.project.name)
+            projectDescription.setSpan(ForegroundColorSpan(item.project.color.toColorInt()), 0, item.project.name.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-        project.isVisible = item.project != null
 
-        if (item.client != null) {
-            client.text = item.client.name
+        if (item.project?.clientName != null) {
+            projectDescription.append(" ")
+            projectDescription.append(item.project.clientName)
         }
-        client.isVisible = item.client != null
+
+        project.text = projectDescription
+        project.isVisible = item.project != null
 
         billableIcon.isVisible = item.billable
 

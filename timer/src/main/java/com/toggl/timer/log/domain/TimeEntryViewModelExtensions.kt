@@ -12,8 +12,7 @@ fun TimeEntry.toFlatTimeEntryViewModel(projects: Map<Long, Project>, clients: Ma
         startTime = startTime,
         duration = duration
             ?: throw IllegalStateException("Running time entries are not supported"),
-        project = projects.getProjectViewModelFor(this),
-        client = clients.getClientViewModelFor(this, projects),
+        project = projects.getProjectViewModelFor(this, clients),
         billable = billable
     )
 
@@ -29,28 +28,18 @@ fun List<TimeEntry>.toTimeEntryGroupViewModel(
         isExpanded = isExpanded,
         description = first().description,
         duration = totalDuration(),
-        project = projects.getProjectViewModelFor(this.first()),
-        client = clients.getClientViewModelFor(this.first(), projects),
+        project = projects.getProjectViewModelFor(this.first(), clients),
         billable = first().billable
     )
 
-fun Project.toProjectViewModel() = ProjectViewModel(id, name, color)
-fun Client.toClientViewModel() = ClientViewModel(id, name)
+fun Project.toProjectViewModel(clients: Map<Long, Client>) = ProjectViewModel(id, name, color, clients[clientId]?.name)
 
 fun List<TimeEntry>.totalDuration(): Duration =
     fold(Duration.ZERO) { acc, timeEntry -> acc + timeEntry.duration }
 
-private fun Map<Long, Project>.getProjectViewModelFor(timeEntry: TimeEntry): ProjectViewModel? {
+private fun Map<Long, Project>.getProjectViewModelFor(timeEntry: TimeEntry, clients: Map<Long, Client>): ProjectViewModel? {
     val projectId = timeEntry.projectId
     return if (projectId == null) null
-    else this[projectId]?.run(Project::toProjectViewModel)
-}
 
-private fun Map<Long, Client>.getClientViewModelFor(
-    timeEntry: TimeEntry,
-    projects: Map<Long, Project>
-): ClientViewModel? {
-    val clientId = timeEntry.projectId?.let { projects[it]?.clientId } ?: return null
-
-    return this[clientId]?.run(Client::toClientViewModel)
+    else this[projectId]?.toProjectViewModel(clients)
 }
