@@ -26,8 +26,7 @@ class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListe
         description.text = item.description
         groupCount.text = "${item.timeEntryIds.size}"
 
-        project.text = item.project?.formatForDisplay()
-        project.isVisible = item.project != null
+        project.text = item.project.formatForDisplay()
 
         billableIcon.isVisible = item.billable
 

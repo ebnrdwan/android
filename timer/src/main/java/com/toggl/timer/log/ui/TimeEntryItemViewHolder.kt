@@ -24,8 +24,7 @@ class TimeEntryItemViewHolder(itemView: View, private val onContinueTappedListen
         description.isVisible = hasDescription
         description.text = item.description
 
-        project.text = item.project?.formatForDisplay()
-        project.isVisible = item.project != null
+        project.text = item.project.formatForDisplay()
 
         billableIcon.isVisible = item.billable
 

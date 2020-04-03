@@ -24,14 +24,16 @@ data class ProjectViewModel(
     val clientName: String?
 )
 
-fun ProjectViewModel.formatForDisplay() =
-    buildSpannedString {
-        color(color.toColorInt()) {
-            append(name)
+fun ProjectViewModel?.formatForDisplay() =
+    if (this == null) ""
+    else
+        buildSpannedString {
+            color(color.toColorInt()) {
+                append(name)
+            }
+            append(" ")
+            append(clientName ?: "")
         }
-        append(" ")
-        append(clientName ?: "")
-    }
 
 data class DayHeaderViewModel(
     val dayTitle: String,

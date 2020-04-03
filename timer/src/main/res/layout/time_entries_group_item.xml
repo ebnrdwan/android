@@ -86,7 +86,6 @@
         android:layout_marginStart="4dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:maxLines="1"
         android:singleLine="true"
         android:textSize="15sp"
@@ -98,7 +97,6 @@
         app:layout_constraintEnd_toEndOf="@+id/duration_gradient"
         app:layout_goneMarginStart="@dimen/time_entry_log_side_padding"
         tools:text="Short proj"
-        tools:visibility="visible"
         tools:textColor="#c56bff" />
     <View
         android:id="@+id/duration_padding_area"
