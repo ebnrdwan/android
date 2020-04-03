@@ -3,6 +3,7 @@ package com.toggl.domain.reducers
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.domain.extensions.createClient
 import com.toggl.domain.extensions.createProject
+import com.toggl.domain.extensions.createTag
 import com.toggl.domain.extensions.createTimeEntry
 import com.toggl.domain.extensions.toSettableValue
 import com.toggl.domain.loading.LoadClientsEffect
@@ -16,6 +17,7 @@ import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.ProjectRepository
+import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
 import io.kotlintest.matchers.collections.shouldContainInOrder
@@ -28,9 +30,10 @@ class LoadingReducerTests : FreeSpec({
     val clientRepository = mockk<ClientRepository>()
     val timeEntryRepository = mockk<TimeEntryRepository>()
     val workspaceRepository = mockk<WorkspaceRepository>()
+    val tagRepository = mockk<TagRepository>()
     val dispatcherProvider = mockk<DispatcherProvider>()
-    val reducer = LoadingReducer(projectRepository, clientRepository, timeEntryRepository, workspaceRepository, dispatcherProvider)
-    val emptyState = LoadingState(listOf(), listOf(), listOf(), listOf())
+    val reducer = LoadingReducer(projectRepository, clientRepository, timeEntryRepository, workspaceRepository, tagRepository, dispatcherProvider)
+    val emptyState = LoadingState(listOf(), listOf(), listOf(), listOf(), listOf())
 
     "The LoadingReducer" - {
         "when receiving a Start Loading action" - {
@@ -106,6 +109,18 @@ class LoadingReducerTests : FreeSpec({
                 reducer.reduce(settableValue, LoadingAction.ClientsLoaded(clients))
 
                 initialState shouldBe emptyState.copy(clients = clients)
+            }
+        }
+
+        "when receiving a Tags Loaded action" - {
+
+            "updates the state to add the loaded tags" - {
+                val tags = (1L..10L).map { createTag(it) }
+                var initialState = emptyState
+                val settableValue = initialState.toSettableValue { initialState = it }
+                reducer.reduce(settableValue, LoadingAction.TagsLoaded(tags))
+
+                initialState shouldBe emptyState.copy(tags = tags)
             }
         }
     }

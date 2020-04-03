@@ -4,11 +4,13 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.toggl.common.BottomNavigationProvider
 import com.toggl.models.common.SwipeDirection
 import com.toggl.environment.services.time.TimeService
 import com.toggl.timer.R
@@ -20,7 +22,7 @@ import com.toggl.timer.log.domain.TimeEntryGroupViewModel
 import com.toggl.timer.log.domain.TimeEntryViewModel
 import com.toggl.timer.log.domain.timeEntriesLogSelector
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.time_entries_log_fragment.*
+import kotlinx.android.synthetic.main.fragment_time_entries_log.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -28,7 +30,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class TimeEntriesLogFragment : Fragment(R.layout.time_entries_log_fragment) {
+class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
 
     @Inject
     lateinit var timeService: TimeService
@@ -71,6 +73,16 @@ class TimeEntriesLogFragment : Fragment(R.layout.time_entries_log_fragment) {
                 .map(curriedTimeEntriesSelector)
                 .distinctUntilChanged()
                 .onEach { adapter.submitList(it) }
+                .launchIn(this)
+
+            store.state
+                .map { it.editableTimeEntry != null }
+                .distinctUntilChanged()
+                .onEach { isEditViewExpanded ->
+                    running_time_entry_layout.isVisible = !isEditViewExpanded
+                    edit_time_entry_bottom_sheet.isVisible = isEditViewExpanded
+                    (activity as BottomNavigationProvider).isBottomNavigationVisible = !isEditViewExpanded
+                }
                 .launchIn(this)
         }
     }

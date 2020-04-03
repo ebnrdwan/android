@@ -13,7 +13,7 @@ class ToggleBillableActionTests : FreeSpec({
     val repository = mockk<TimeEntryRepository>()
     val reducer = StartTimeEntryReducer(repository)
 
-    "The ToggleBillableAction" - {
+    "The ToggleBillable action" - {
         "should invert the values of the editable time entry" - {
             Gen.bool().constants().forEach { originalBillableValue ->
                 var state = StartTimeEntryState.editableTimeEntry
@@ -22,7 +22,7 @@ class ToggleBillableActionTests : FreeSpec({
 
                 val effects = reducer.reduce(settableValue, StartTimeEntryAction.ToggleBillable)
                 effects shouldBe noEffect()
-                state.editableTimeEntry.billable shouldBe !originalBillableValue
+                state.editableTimeEntry!!.billable shouldBe !originalBillableValue
             }
         }
     }

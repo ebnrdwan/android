@@ -24,7 +24,8 @@ fun createTimeEntry(
         1,
         projectId,
         null,
-        false
+        false,
+        emptyList()
     )
 
 fun <T> T.toSettableValue(setFunction: (T) -> Unit) =

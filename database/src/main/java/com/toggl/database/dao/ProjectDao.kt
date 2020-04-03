@@ -5,28 +5,28 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.toggl.models.domain.Project
+import com.toggl.database.models.DatabaseProject
 
 @Dao
 interface ProjectDao {
-    @Query("SELECT * FROM Project")
-    fun getAll(): List<Project>
+    @Query("SELECT * FROM projects")
+    fun getAll(): List<DatabaseProject>
 
-    @Query("SELECT * FROM Project WHERE id = :id")
-    fun getOne(id: Long): Project
-
-    @Insert
-    fun insertAll(vararg projects: Project): List<Long>
+    @Query("SELECT * FROM projects WHERE id = :id")
+    fun getOne(id: Long): DatabaseProject
 
     @Insert
-    fun insert(project: Project): Long
+    fun insertAll(vararg databaseProjects: DatabaseProject): List<Long>
+
+    @Insert
+    fun insert(databaseProject: DatabaseProject): Long
 
     @Update
-    fun update(project: Project)
+    fun update(databaseProject: DatabaseProject)
 
     @Update
-    fun updateAll(projects: List<Project>)
+    fun updateAll(databaseProjects: List<DatabaseProject>)
 
     @Delete
-    fun delete(project: Project)
+    fun delete(databaseProject: DatabaseProject)
 }

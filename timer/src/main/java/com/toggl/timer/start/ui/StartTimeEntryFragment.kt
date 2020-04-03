@@ -1,32 +1,30 @@
 package com.toggl.timer.start.ui
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.R
 import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.extensions.runningTimeEntryOrNull
 import com.toggl.timer.start.domain.StartTimeEntryAction
-import javax.inject.Inject
-import kotlinx.android.synthetic.main.start_time_entry_fragment.*
+import kotlinx.android.synthetic.main.fragment_start_time_entry.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class StartTimeEntryFragment : Fragment(R.layout.start_time_entry_fragment) {
+class StartTimeEntryFragment : Fragment(R.layout.fragment_start_time_entry) {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -44,14 +42,18 @@ class StartTimeEntryFragment : Fragment(R.layout.start_time_entry_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         time_entry_description.doOnTextChanged { text, _, _, _ ->
-            val action = StartTimeEntryAction.TimeEntryDescriptionChanged(text.toString())
+            val action = StartTimeEntryAction.DescriptionEntered(text.toString())
             store.dispatch(action)
+        }
+
+        close_action.setOnClickListener {
+            store.dispatch(StartTimeEntryAction.CloseButtonTapped)
         }
 
         lifecycleScope.launch {
 
             store.state
-                .map { it.editableTimeEntry.description }
+                .map { it.editableTimeEntry?.description }
                 .distinctUntilChanged()
                 .onEach {
                     if (time_entry_description?.text.toString() != it) {
@@ -60,53 +62,26 @@ class StartTimeEntryFragment : Fragment(R.layout.start_time_entry_fragment) {
                 }
                 .launchIn(this)
 
-            val runningTimeEntryFlow = store.state
-                .map { it.timeEntries.runningTimeEntryOrNull() }
-                .distinctUntilChanged()
-
-            runningTimeEntryFlow
-                .filterNotNull()
-                .onEach { updateRunningTimeEntryCard(it) }
-                .launchIn(this)
-
-            runningTimeEntryFlow
-                .map { it != null }
+            store.state
+                .map { it.timeEntries.runningTimeEntryOrNull() != null }
                 .distinctUntilChanged()
                 .onEach { setEditedTimeEntryState(it) }
+                .launchIn(this)
+
+            store.state
+                .mapNotNull { it.editableTimeEntry }
+                .onEach {
+                    time_entry_description.requestFocus()
+                    extended_options.isInvisible = true
+                }
                 .launchIn(this)
         }
     }
 
-    private fun updateRunningTimeEntryCard(timeEntry: TimeEntry) {
-        runningTimeEntryDescription.text = timeEntry.description
-    }
-
     private fun setEditedTimeEntryState(timeEntryIsRunning: Boolean) {
-        time_entry_description_input_layout.isVisible = !timeEntryIsRunning
-        running_time_entry_layout.isVisible = timeEntryIsRunning
-
-        with(start_time_entry_button) {
-            if (timeEntryIsRunning) {
-                val color = ContextCompat.getColor(
-                    requireContext(),
-                    R.color.stop_time_entry_button_background
-                )
-                backgroundTintList = ColorStateList.valueOf(color)
-                setImageResource(R.drawable.ic_stop)
-                setOnClickListener {
-                    store.dispatch(StartTimeEntryAction.StopTimeEntryButtonTapped)
-                }
-            } else {
-                val color = ContextCompat.getColor(
-                    requireContext(),
-                    R.color.start_time_entry_button_background
-                )
-                backgroundTintList = ColorStateList.valueOf(color)
-                setImageResource(R.drawable.ic_play_big)
-                setOnClickListener {
-                    store.dispatch(StartTimeEntryAction.StartTimeEntryButtonTapped)
-                }
-            }
+        done_action.isVisible = !timeEntryIsRunning
+        done_action.setOnClickListener {
+            store.dispatch(StartTimeEntryAction.DoneButtonTapped)
         }
     }
 }

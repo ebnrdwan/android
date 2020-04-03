@@ -8,6 +8,7 @@ import com.toggl.architecture.extensions.noEffect
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.StartTimeEntryEffect
+import com.toggl.timer.common.domain.StopTimeEntryEffect
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
 import com.toggl.timer.extensions.replaceTimeEntryWithId
 import javax.inject.Inject
@@ -21,15 +22,12 @@ class StartTimeEntryReducer @Inject constructor(
         action: StartTimeEntryAction
     ): List<Effect<StartTimeEntryAction>> =
         when (action) {
-            StartTimeEntryAction.StopTimeEntryButtonTapped ->
-                effect(StopTimeEntryEffect(repository))
-            StartTimeEntryAction.StartTimeEntryButtonTapped -> {
-                val editableTimeEntry = state.value.editableTimeEntry
-                val workspace = state.value.workspaces.values.single()
-                state.value = state.value.copy(editableTimeEntry = EditableTimeEntry.empty(workspace.id))
-                startTimeEntry(editableTimeEntry, repository)
+            StartTimeEntryAction.StopTimeEntryButtonTapped -> stopTimeEntry(repository)
+            StartTimeEntryAction.CloseButtonTapped -> {
+                state.value = state.value.copy(editableTimeEntry = null)
+                noEffect()
             }
-            is StartTimeEntryAction.TimeEntryDescriptionChanged -> {
+            is StartTimeEntryAction.DescriptionEntered -> {
                 state.value = StartTimeEntryState.editableTimeEntry.modify(state.value) {
                     it.copy(description = action.description)
                 }
@@ -38,7 +36,10 @@ class StartTimeEntryReducer @Inject constructor(
             is StartTimeEntryAction.TimeEntryUpdated -> {
                 val newTimeEntries = state.value.timeEntries
                     .replaceTimeEntryWithId(action.id, action.timeEntry)
-                state.value = state.value.copy(timeEntries = newTimeEntries)
+                state.value = state.value.copy(
+                    timeEntries = newTimeEntries,
+                    editableTimeEntry = null
+                )
                 noEffect()
             }
             is StartTimeEntryAction.TimeEntryStarted -> {
@@ -47,7 +48,8 @@ class StartTimeEntryReducer @Inject constructor(
                         state.value.timeEntries,
                         action.startedTimeEntry,
                         action.stoppedTimeEntry
-                    )
+                    ),
+                    editableTimeEntry = null
                 )
                 noEffect()
             }
@@ -58,12 +60,27 @@ class StartTimeEntryReducer @Inject constructor(
 
                 noEffect()
             }
+            StartTimeEntryAction.DoneButtonTapped -> {
+                val timeEntry = state.value.editableTimeEntry
+                state.value = state.value.copy(editableTimeEntry = null)
+                startTimeEntry(timeEntry!!, repository)
+            }
         }
 
     private fun startTimeEntry(editableTimeEntry: EditableTimeEntry, repository: TimeEntryRepository) =
         effect(
             StartTimeEntryEffect(repository, editableTimeEntry) {
                 StartTimeEntryAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
+            }
+        )
+
+    private fun stopTimeEntry(repository: TimeEntryRepository) =
+        effect(
+            StopTimeEntryEffect(repository) {
+                StartTimeEntryAction.TimeEntryUpdated(
+                    it.id,
+                    it
+                )
             }
         )
 }

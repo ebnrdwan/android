@@ -27,7 +27,7 @@ class TimeEntryStartedActionTests : FreeSpec({
     val stopped = timeEntries[2L]!!.copy(duration = Duration.ofHours(2))
     val reducer = StartTimeEntryReducer(repository)
 
-    "The TimeEntryStartedAction action" - {
+    "The TimeEntryStarted action" - {
         "with stopped entry" - {
             reducer.testReduce(
                 initialState = initState,

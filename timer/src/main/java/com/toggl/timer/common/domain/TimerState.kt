@@ -15,13 +15,11 @@ data class TimerState(
     val localState: LocalState
 ) {
     data class LocalState internal constructor(
-        internal val editViewTimeEntry: EditableTimeEntry?,
-        internal val startViewTimeEntry: EditableTimeEntry,
+        internal val editableTimeEntry: EditableTimeEntry?,
         internal val expandedGroupIds: Set<Long>
     ) {
-        constructor(defaultWorkspace: Workspace) : this(
-            editViewTimeEntry = null,
-            startViewTimeEntry = EditableTimeEntry.empty(defaultWorkspace.id),
+        constructor() : this(
+            editableTimeEntry = null,
             expandedGroupIds = setOf()
         )
 
@@ -32,4 +30,4 @@ data class TimerState(
 }
 
 fun TimerState.LocalState.getRunningTimeEntryWorkspaceId() =
-    this.startViewTimeEntry.workspaceId
+    this.editableTimeEntry?.workspaceId

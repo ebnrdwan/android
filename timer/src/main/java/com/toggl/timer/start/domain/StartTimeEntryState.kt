@@ -10,21 +10,21 @@ import com.toggl.timer.common.domain.TimerState
 data class StartTimeEntryState(
     val timeEntries: Map<Long, TimeEntry>,
     val workspaces: Map<Long, Workspace>,
-    val editableTimeEntry: EditableTimeEntry
+    val editableTimeEntry: EditableTimeEntry?
 ) {
     companion object {
         fun fromTimerState(timerState: TimerState) =
             StartTimeEntryState(
                 timeEntries = timerState.timeEntries,
                 workspaces = timerState.workspaces,
-                editableTimeEntry = timerState.localState.startViewTimeEntry
+                editableTimeEntry = timerState.localState.editableTimeEntry
             )
 
         fun toTimerState(timerState: TimerState, startTimeEntryState: StartTimeEntryState) =
             timerState.copy(
                 timeEntries = startTimeEntryState.timeEntries,
                 localState = timerState.localState.copy(
-                    startViewTimeEntry = startTimeEntryState.editableTimeEntry
+                    editableTimeEntry = startTimeEntryState.editableTimeEntry
                 )
             )
     }

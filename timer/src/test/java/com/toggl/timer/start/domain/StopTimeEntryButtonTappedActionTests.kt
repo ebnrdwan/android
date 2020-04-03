@@ -3,6 +3,7 @@ package com.toggl.timer.start.domain
 import com.toggl.models.domain.Workspace
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.domain.EditableTimeEntry
+import com.toggl.timer.common.domain.StopTimeEntryEffect
 import com.toggl.timer.common.testReduce
 import io.kotlintest.matchers.collections.shouldBeSingleton
 import io.kotlintest.matchers.types.shouldBeTypeOf
@@ -19,14 +20,14 @@ class StopTimeEntryButtonTappedActionTests : FreeSpec({
     val initState = StartTimeEntryState(mapOf(), mapOf(1L to workspace), editableTimeEntry)
     val reducer = StartTimeEntryReducer(repository)
 
-    "The StopTimeEntryButtonTappedAction action" - {
+    "The StopTimeEntryButtonTapped action" - {
         reducer.testReduce(
             initialState = initState,
             action = StartTimeEntryAction.StopTimeEntryButtonTapped
         ) { state, effect ->
             "should return StartTimeEntryEffect effect" {
                 effect.shouldBeSingleton()
-                effect.single().shouldBeTypeOf<StopTimeEntryEffect>()
+                effect.single().shouldBeTypeOf<StopTimeEntryEffect<StartTimeEntryAction.TimeEntryUpdated>>()
             }
             "shouldn't change the state" {
                 state shouldBe initState

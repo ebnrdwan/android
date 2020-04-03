@@ -9,6 +9,9 @@ import com.toggl.timer.common.domain.TimerState
 import com.toggl.timer.log.domain.TimeEntriesLogAction
 import com.toggl.timer.log.domain.TimeEntriesLogReducer
 import com.toggl.timer.log.domain.TimeEntriesLogState
+import com.toggl.timer.running.domain.RunningTimeEntryAction
+import com.toggl.timer.running.domain.RunningTimeEntryReducer
+import com.toggl.timer.running.domain.RunningTimeEntryState
 import com.toggl.timer.start.domain.StartTimeEntryAction
 import com.toggl.timer.start.domain.StartTimeEntryReducer
 import com.toggl.timer.start.domain.StartTimeEntryState
@@ -38,12 +41,21 @@ class TimerModule {
         )
 
     @ExperimentalCoroutinesApi
+    @Provides
+    internal fun runningTimeEntryStore(store: Store<TimerState, TimerAction>): Store<RunningTimeEntryState, RunningTimeEntryAction> =
+        store.view(
+            mapToLocalState = RunningTimeEntryState.Companion::fromTimerState,
+            mapToGlobalAction = RunningTimeEntryAction.Companion::toTimerAction
+        )
+
+    @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     @Provides
     @Singleton
     internal fun timerReducer(
         timeEntriesLogReducer: TimeEntriesLogReducer,
-        startTimeEntryReducer: StartTimeEntryReducer
+        startTimeEntryReducer: StartTimeEntryReducer,
+        runningTimeEntryReducer: RunningTimeEntryReducer
     ): TimerReducer {
 
         return combine(
@@ -58,6 +70,12 @@ class TimerModule {
                 mapToLocalAction = StartTimeEntryAction.Companion::fromTimerAction,
                 mapToGlobalState = StartTimeEntryState.Companion::toTimerState,
                 mapToGlobalAction = StartTimeEntryAction.Companion::toTimerAction
+            ),
+            runningTimeEntryReducer.pullback(
+                mapToLocalState = RunningTimeEntryState.Companion::fromTimerState,
+                mapToLocalAction = RunningTimeEntryAction.Companion::fromTimerAction,
+                mapToGlobalState = RunningTimeEntryState.Companion::toTimerState,
+                mapToGlobalAction = RunningTimeEntryAction.Companion::toTimerAction
             )
         )
     }

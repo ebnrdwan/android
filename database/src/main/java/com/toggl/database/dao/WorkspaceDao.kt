@@ -5,28 +5,28 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.toggl.models.domain.Workspace
+import com.toggl.database.models.DatabaseWorkspace
 
 @Dao
 interface WorkspaceDao {
-    @Query("SELECT * FROM Workspace")
-    fun getAll(): List<Workspace>
+    @Query("SELECT * FROM workspaces")
+    fun getAll(): List<DatabaseWorkspace>
 
-    @Query("SELECT * FROM Workspace WHERE id = :id")
-    fun getOne(id: Long): Workspace
-
-    @Insert
-    fun insertAll(vararg workspaces: Workspace): List<Long>
+    @Query("SELECT * FROM workspaces WHERE id = :id")
+    fun getOne(id: Long): DatabaseWorkspace
 
     @Insert
-    fun insert(workspace: Workspace): Long
+    fun insertAll(vararg databaseWorkspaces: DatabaseWorkspace): List<Long>
+
+    @Insert
+    fun insert(databaseWorkspace: DatabaseWorkspace): Long
 
     @Update
-    fun update(workspace: Workspace)
+    fun update(databaseWorkspace: DatabaseWorkspace)
 
     @Update
-    fun updateAll(workspaces: List<Workspace>)
+    fun updateAll(databaseWorkspaces: List<DatabaseWorkspace>)
 
     @Delete
-    fun delete(workspace: Workspace)
+    fun delete(databaseWorkspace: DatabaseWorkspace)
 }

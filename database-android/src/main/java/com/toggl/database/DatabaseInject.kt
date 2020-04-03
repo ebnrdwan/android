@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.toggl.database.dao.ClientDao
 import com.toggl.database.dao.ProjectDao
+import com.toggl.database.dao.TagDao
 import com.toggl.database.dao.TimeEntryDao
 import com.toggl.database.dao.WorkspaceDao
 import dagger.Module
@@ -46,4 +47,8 @@ class DatabaseDaoModule {
     @Provides
     @Singleton
     fun clientDao(appDatabase: TogglDatabase): ClientDao = appDatabase.clientDao()
+
+    @Provides
+    @Singleton
+    fun tagsDao(appDatabase: TogglDatabase): TagDao = appDatabase.tagDao()
 }

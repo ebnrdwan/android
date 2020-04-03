@@ -2,6 +2,7 @@ package com.toggl.domain.extensions
 
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
+import com.toggl.models.domain.Tag
 import com.toggl.models.domain.TimeEntry
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
@@ -23,7 +24,8 @@ fun createTimeEntry(
         1,
         projectId,
         null,
-        false
+        false,
+        emptyList()
     )
 
 fun createProject(
@@ -47,3 +49,5 @@ fun createProject(
 )
 
 fun createClient(id: Long) = Client(id, "name: $id", 1)
+
+fun createTag(id: Long) = Tag(id, "# $id", 1)

@@ -4,17 +4,14 @@ import com.toggl.models.domain.Workspace
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.domain.EditableTimeEntry
-import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.testReduce
-import com.toggl.timer.log.domain.TimeEntriesLogAction
-import io.kotlintest.matchers.collections.shouldBeSingleton
-import io.kotlintest.matchers.types.shouldBeTypeOf
-import io.kotlintest.shouldBe
+import io.kotlintest.matchers.collections.shouldBeEmpty
+import io.kotlintest.matchers.types.shouldBeNull
 import io.kotlintest.specs.FreeSpec
 import io.mockk.coEvery
 import io.mockk.mockk
 
-class StartTimeEntryButtonTappedActionTests : FreeSpec({
+class CloseButtonTappedActionTests : FreeSpec({
     val repository = mockk<TimeEntryRepository>()
     val workspace = mockk<Workspace>()
     val editableTimeEntry = EditableTimeEntry.fromSingle(createTimeEntry(1, description = "Test"))
@@ -22,17 +19,16 @@ class StartTimeEntryButtonTappedActionTests : FreeSpec({
     val reducer = StartTimeEntryReducer(repository)
     coEvery { workspace.id } returns 1
 
-    "The StartTimeEntryAction action" - {
+    "The CloseButtonTapped action" - {
         reducer.testReduce(
             initialState = state,
-            action = StartTimeEntryAction.StartTimeEntryButtonTapped
+            action = StartTimeEntryAction.CloseButtonTapped
         ) { state, effect ->
-            "should clear editableTimeEntry" {
-                state.editableTimeEntry shouldBe EditableTimeEntry.empty(workspace.id)
+            "should nullify editableTimeEntry" {
+                state.editableTimeEntry.shouldBeNull()
             }
-            "should return StartTimeEntryEffect effect" {
-                effect.shouldBeSingleton()
-                effect.single().shouldBeTypeOf<StartTimeEntryEffect<TimeEntriesLogAction.TimeEntryStarted>>()
+            "shouldn't emmit any effect" {
+                effect.shouldBeEmpty()
             }
         }
     }
