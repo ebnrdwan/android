@@ -13,6 +13,7 @@ import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
 import com.toggl.timer.common.domain.handleTimeEntryDeletionStateChanges
+import com.toggl.timer.extensions.containsExactly
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
@@ -101,6 +102,19 @@ class TimeEntriesLogReducer @Inject constructor(private val repository: TimeEntr
                         else state.value.expandedGroupIds + action.groupId
                     state.value = state.value.copy(expandedGroupIds = newUngroupedTimeEntries)
                     noEffect()
+                }
+                is TimeEntriesLogAction.CommitDeletion -> {
+                    val timeEntryIdsToDelete =
+                        if(state.value.entriesPendingDeletion.containsExactly(action.ids)) action.ids
+                        else listOf()
+
+                    if (timeEntryIdsToDelete.none()){
+                        noEffect()
+                    } else {
+                        val timeEntriesToDelete = timeEntryIdsToDelete.mapNotNull { state.value.timeEntries[it] }
+                        state.value = state.value.copy(entriesPendingDeletion = setOf())
+                        timeEntriesToDelete.map { delete(it, repository) }
+                    }
                 }
             }
 
