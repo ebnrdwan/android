@@ -105,10 +105,10 @@ class TimeEntriesLogReducer @Inject constructor(private val repository: TimeEntr
                 }
                 is TimeEntriesLogAction.CommitDeletion -> {
                     val timeEntryIdsToDelete =
-                        if(state.value.entriesPendingDeletion.containsExactly(action.ids)) action.ids
+                        if (state.value.entriesPendingDeletion.containsExactly(action.ids)) action.ids
                         else listOf()
 
-                    if (timeEntryIdsToDelete.none()){
+                    if (timeEntryIdsToDelete.none()) {
                         noEffect()
                     } else {
                         val timeEntriesToDelete = timeEntryIdsToDelete.mapNotNull { state.value.timeEntries[it] }
