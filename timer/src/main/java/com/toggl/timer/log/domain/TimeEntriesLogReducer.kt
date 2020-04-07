@@ -111,10 +111,15 @@ class TimeEntriesLogReducer @Inject constructor(private val repository: TimeEntr
                     if (timeEntryIdsToDelete.none()) {
                         noEffect()
                     } else {
-                        val timeEntriesToDelete = timeEntryIdsToDelete.mapNotNull { state.value.timeEntries[it] }
+                        val timeEntriesToDelete =
+                            timeEntryIdsToDelete.mapNotNull { state.value.timeEntries[it] }
                         state.value = state.value.copy(entriesPendingDeletion = setOf())
                         timeEntriesToDelete.map { delete(it, repository) }
                     }
+                }
+                is TimeEntriesLogAction.UndoButtonPressed -> {
+                    state.value = state.value.copy(entriesPendingDeletion = emptySet())
+                    noEffect()
                 }
             }
 
