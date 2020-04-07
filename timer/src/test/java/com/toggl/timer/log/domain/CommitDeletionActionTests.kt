@@ -33,7 +33,21 @@ class CommitDeletionActionTests : FreeSpec({
                 effect shouldBe noEffect()
             }
 
-            "the ids pending deletion don't match those in state" {
+            "the ids pending deletion in action don't match those in state" {
+                val initialState = createInitialState(entriesPendingDeletion = setOf(1, 2, 3))
+                var state = initialState
+                val settableValue = state.toSettableValue { state = it }
+
+                val effect = reducer.reduce(
+                    settableValue,
+                    TimeEntriesLogAction.CommitDeletion(listOf(4, 5, 1337))
+                )
+
+                state shouldBe initialState
+                effect shouldBe noEffect()
+            }
+
+            "the ids pending deletion in action are a subset of those in state" {
                 val initialState = createInitialState(entriesPendingDeletion = setOf(1, 2, 3))
                 var state = initialState
                 val settableValue = state.toSettableValue { state = it }
@@ -41,6 +55,20 @@ class CommitDeletionActionTests : FreeSpec({
                 val effect = reducer.reduce(
                     settableValue,
                     TimeEntriesLogAction.CommitDeletion(listOf(1, 3))
+                )
+
+                state shouldBe initialState
+                effect shouldBe noEffect()
+            }
+
+            "the ids pending deletion in action are a superset of those in state" {
+                val initialState = createInitialState(entriesPendingDeletion = setOf(1, 2, 3))
+                var state = initialState
+                val settableValue = state.toSettableValue { state = it }
+
+                val effect = reducer.reduce(
+                    settableValue,
+                    TimeEntriesLogAction.CommitDeletion(listOf(1, 2, 3, 1337))
                 )
 
                 state shouldBe initialState
