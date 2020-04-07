@@ -1,3 +1,3 @@
 package com.toggl.timer.extensions
 
-fun <T> Set<T>.containsExactly(elements: Collection<T>) = this.containsAll(elements) && this.size == elements.size
+fun <T> Set<T>.containsExactly(elements: Collection<T>) = this.size == elements.size && this.containsAll(elements)
