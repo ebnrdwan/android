@@ -40,5 +40,5 @@ fun TimeEntriesLogAction.formatForDebug() =
         is TimeEntriesLogAction.TimeEntryStarted -> "Time entry started $startedTimeEntry"
         is TimeEntriesLogAction.TimeEntryDeleted -> "Deleted time entry with id ${deletedTimeEntry.id}"
         is TimeEntriesLogAction.ToggleTimeEntryGroupTapped -> "Time entry group with id $groupId toggled"
-        is TimeEntriesLogAction.CommitDeletion -> "Commit deletion of $ids"
+        is TimeEntriesLogAction.CommitDeletion -> "Committed deletion of $ids"
     }
