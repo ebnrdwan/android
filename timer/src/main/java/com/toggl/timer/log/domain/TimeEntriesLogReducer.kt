@@ -103,8 +103,7 @@ class TimeEntriesLogReducer @Inject constructor(private val repository: TimeEntr
                     noEffect()
                 }
                 is TimeEntriesLogAction.UndoButtonPressed -> {
-                    if (state.value.entriesPendingDeletion.isNotEmpty())
-                        state.value = state.value.copy(entriesPendingDeletion = setOf())
+                    state.value = state.value.copy(entriesPendingDeletion = emptySet())
                     noEffect()
                 }
             }
