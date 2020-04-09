@@ -2,7 +2,7 @@
 <resources>
     <string name="deep_link_main" translatable="false">toggl://main</string>
     <string name="deep_link_time_entries_log" translatable="false">toggl://timeentrieslog</string>
-    <string name="deep_link_start_time_entry_dialog" translatable="false">toggl://starttimeentrydialog</string>
+    <string name="deep_link_start_edit_dialog" translatable="false">toggl://starteditdialog</string>
     <string name="deep_link_reports" translatable="false">toggl://reports</string>
     <string name="deep_link_calendar" translatable="false">toggl://calendar</string>
 </resources>

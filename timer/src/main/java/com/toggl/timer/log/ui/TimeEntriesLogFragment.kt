@@ -8,8 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.toggl.common.deepLinks
@@ -92,7 +90,7 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
                 .distinctUntilChanged()
                 .onEach { isEditViewExpanded ->
                     if (isEditViewExpanded) {
-                        findNavController().navigate(deepLinks.timeEntriesStartDialog)
+                        findNavController().navigate(deepLinks.timeEntriesStartEditDialog)
                     }
                 }
                 .launchIn(this)

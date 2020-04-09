@@ -14,7 +14,7 @@
         android:id="@+id/start_time_entry_dialog"
         android:name="com.toggl.timer.startedit.ui.StartEditDialogFragment"
         android:label="StartTimeEntryDialogFragment">
-        <deepLink app:uri="@string/deep_link_start_time_entry_dialog" />
+        <deepLink app:uri="@string/deep_link_start_edit_dialog" />
     </dialog>
 
     <fragment

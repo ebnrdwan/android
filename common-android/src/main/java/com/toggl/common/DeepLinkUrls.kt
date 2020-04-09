@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 class DeepLinkUrls(resources: Resources) {
     val main = resources.getString(R.string.deep_link_main).toUri()
     val timeEntriesLog = resources.getString(R.string.deep_link_time_entries_log).toUri()
-    val timeEntriesStartDialog = resources.getString(R.string.deep_link_start_time_entry_dialog).toUri()
+    val timeEntriesStartEditDialog = resources.getString(R.string.deep_link_start_edit_dialog).toUri()
     val calendar = resources.getString(R.string.deep_link_calendar).toUri()
     val reports = resources.getString(R.string.deep_link_reports).toUri()
 }
