@@ -33,7 +33,7 @@ import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.startedit.domain.StartEditAction
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
-import kotlinx.android.synthetic.main.fragment_dialog_start_edit_time_entry.*
+import kotlinx.android.synthetic.main.fragment_dialog_start_edit.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -71,7 +71,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_dialog_start_edit_time_entry, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_dialog_start_edit, container, false)
 
     @ExperimentalCoroutinesApi
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

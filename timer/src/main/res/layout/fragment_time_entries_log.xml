@@ -49,7 +49,7 @@
             android:name="com.toggl.timer.running.ui.RunningTimeEntryFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout="@layout/fragment_dialog_start_edit_time_entry" />
+            tools:layout="@layout/fragment_dialog_start_edit" />
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
