@@ -33,7 +33,7 @@ class TimeEntryUpdatedActionTests : FreeCoroutineSpec() {
         "The TimeEntryUpdated action" - {
             reducer.testReduce(
                 initialState = initState,
-                action = StartTimeEntryAction.TimeEntryUpdated(2, updated)
+                action = StartEditAction.TimeEntryUpdated(2, updated)
             ) { state, effect ->
                 "should update updated time entry" {
                     state.timeEntries.shouldContain(2L to updated)

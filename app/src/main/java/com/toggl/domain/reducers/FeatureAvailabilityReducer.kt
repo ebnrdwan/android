@@ -9,7 +9,7 @@ import com.toggl.domain.AppState
 import com.toggl.models.extensions.isPro
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.common.domain.getRunningTimeEntryWorkspaceId
-import com.toggl.timer.startedit.domain.StartTimeEntryAction
+import com.toggl.timer.startedit.domain.StartEditAction
 
 class FeatureAvailabilityReducer(override val innerReducer: AppReducer)
     : HigherOrderReducer<AppState, AppAction> {
@@ -33,4 +33,4 @@ class FeatureAvailabilityReducer(override val innerReducer: AppReducer)
 fun AppAction.isToggleBillableAction() =
     this is AppAction.Timer &&
         this.timer is TimerAction.StartTimeEntry &&
-        this.timer.startTimeEntryAction is StartTimeEntryAction.ToggleBillable
+        this.timer.startEditAction is StartEditAction.ToggleBillable

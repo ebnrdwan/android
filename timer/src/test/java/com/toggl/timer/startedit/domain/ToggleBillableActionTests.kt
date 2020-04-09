@@ -21,7 +21,7 @@ class ToggleBillableActionTests : FreeCoroutineSpec() {
                         .modify(createInitialState()) { it.copy(billable = originalBillableValue) }
                     val settableValue = state.toSettableValue { state = it }
 
-                    val effects = reducer.reduce(settableValue, StartTimeEntryAction.ToggleBillable)
+                    val effects = reducer.reduce(settableValue, StartEditAction.ToggleBillable)
                     effects shouldBe noEffect()
                     state.editableTimeEntry!!.billable shouldBe !originalBillableValue
                 }

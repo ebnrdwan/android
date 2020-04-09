@@ -26,7 +26,7 @@ class CloseButtonTappedActionTests : FreeCoroutineSpec() {
         "The CloseButtonTapped action" - {
             reducer.testReduce(
                 initialState = state,
-                action = StartTimeEntryAction.CloseButtonTapped
+                action = StartEditAction.CloseButtonTapped
             ) { state, effect ->
                 "should nullify editableTimeEntry" {
                     state.editableTimeEntry.shouldBeNull()

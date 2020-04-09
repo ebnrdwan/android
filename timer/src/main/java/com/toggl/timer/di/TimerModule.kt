@@ -12,7 +12,7 @@ import com.toggl.timer.log.domain.TimeEntriesLogState
 import com.toggl.timer.running.domain.RunningTimeEntryAction
 import com.toggl.timer.running.domain.RunningTimeEntryReducer
 import com.toggl.timer.running.domain.RunningTimeEntryState
-import com.toggl.timer.startedit.domain.StartTimeEntryAction
+import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartTimeEntryReducer
 import com.toggl.timer.startedit.domain.StartEditState
 import dagger.Module
@@ -34,10 +34,10 @@ class TimerModule {
 
     @ExperimentalCoroutinesApi
     @Provides
-    internal fun startTimeEntryStore(store: Store<TimerState, TimerAction>): Store<StartEditState, StartTimeEntryAction> =
+    internal fun startTimeEntryStore(store: Store<TimerState, TimerAction>): Store<StartEditState, StartEditAction> =
         store.view(
             mapToLocalState = StartEditState.Companion::fromTimerState,
-            mapToGlobalAction = StartTimeEntryAction.Companion::toTimerAction
+            mapToGlobalAction = StartEditAction.Companion::toTimerAction
         )
 
     @ExperimentalCoroutinesApi
@@ -67,9 +67,9 @@ class TimerModule {
             ),
             startTimeEntryReducer.pullback(
                 mapToLocalState = StartEditState.Companion::fromTimerState,
-                mapToLocalAction = StartTimeEntryAction.Companion::fromTimerAction,
+                mapToLocalAction = StartEditAction.Companion::fromTimerAction,
                 mapToGlobalState = StartEditState.Companion::toTimerState,
-                mapToGlobalAction = StartTimeEntryAction.Companion::toTimerAction
+                mapToGlobalAction = StartEditAction.Companion::toTimerAction
             ),
             runningTimeEntryReducer.pullback(
                 mapToLocalState = RunningTimeEntryState.Companion::fromTimerState,

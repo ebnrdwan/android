@@ -26,12 +26,12 @@ class StopTimeEntryButtonTappedActionTests : FreeCoroutineSpec() {
         "The StopTimeEntryButtonTapped action" - {
             reducer.testReduce(
                 initialState = initState,
-                action = StartTimeEntryAction.StopTimeEntryButtonTapped
+                action = StartEditAction.StopTimeEntryButtonTapped
             ) { state, effect ->
                 "should return StartTimeEntryEffect effect" {
                     effect.shouldBeSingleton()
                     effect.single()
-                        .shouldBeTypeOf<StopTimeEntryEffect<StartTimeEntryAction.TimeEntryUpdated>>()
+                        .shouldBeTypeOf<StopTimeEntryEffect<StartEditAction.TimeEntryUpdated>>()
                 }
                 "shouldn't change the state" {
                     state shouldBe initState

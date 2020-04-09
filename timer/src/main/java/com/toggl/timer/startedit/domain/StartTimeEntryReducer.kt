@@ -17,25 +17,25 @@ import javax.inject.Inject
 class StartTimeEntryReducer @Inject constructor(
     private val repository: TimeEntryRepository,
     private val dispatcherProvider: DispatcherProvider
-) : Reducer<StartEditState, StartTimeEntryAction> {
+) : Reducer<StartEditState, StartEditAction> {
 
     override fun reduce(
         state: SettableValue<StartEditState>,
-        action: StartTimeEntryAction
-    ): List<Effect<StartTimeEntryAction>> =
+        action: StartEditAction
+    ): List<Effect<StartEditAction>> =
         when (action) {
-            StartTimeEntryAction.StopTimeEntryButtonTapped -> stopTimeEntry(repository)
-            StartTimeEntryAction.CloseButtonTapped, StartTimeEntryAction.DialogDismissed -> {
+            StartEditAction.StopTimeEntryButtonTapped -> stopTimeEntry(repository)
+            StartEditAction.CloseButtonTapped, StartEditAction.DialogDismissed -> {
                 state.value = state.value.copy(editableTimeEntry = null)
                 noEffect()
             }
-            is StartTimeEntryAction.DescriptionEntered -> {
+            is StartEditAction.DescriptionEntered -> {
                 state.value = StartEditState.editableTimeEntry.modify(state.value) {
                     it.copy(description = action.description)
                 }
                 noEffect()
             }
-            is StartTimeEntryAction.TimeEntryUpdated -> {
+            is StartEditAction.TimeEntryUpdated -> {
                 val newTimeEntries = state.value.timeEntries
                     .replaceTimeEntryWithId(action.id, action.timeEntry)
                 state.value = state.value.copy(
@@ -44,7 +44,7 @@ class StartTimeEntryReducer @Inject constructor(
                 )
                 noEffect()
             }
-            is StartTimeEntryAction.TimeEntryStarted -> {
+            is StartEditAction.TimeEntryStarted -> {
                 state.value = state.value.copy(
                     timeEntries = handleTimeEntryCreationStateChanges(
                         state.value.timeEntries,
@@ -55,14 +55,14 @@ class StartTimeEntryReducer @Inject constructor(
                 )
                 noEffect()
             }
-            StartTimeEntryAction.ToggleBillable -> {
+            StartEditAction.ToggleBillable -> {
                 state.value = StartEditState.editableTimeEntry.modify(state.value) {
                     it.copy(billable = !it.billable)
                 }
 
                 noEffect()
             }
-            StartTimeEntryAction.DoneButtonTapped -> {
+            StartEditAction.DoneButtonTapped -> {
                 val timeEntry = state.value.editableTimeEntry
                 state.value = state.value.copy(editableTimeEntry = null)
                 startTimeEntry(timeEntry!!, repository)
@@ -72,14 +72,14 @@ class StartTimeEntryReducer @Inject constructor(
     private fun startTimeEntry(editableTimeEntry: EditableTimeEntry, repository: TimeEntryRepository) =
         effect(
             StartTimeEntryEffect(repository, editableTimeEntry, dispatcherProvider) {
-                StartTimeEntryAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
+                StartEditAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
             }
         )
 
     private fun stopTimeEntry(repository: TimeEntryRepository) =
         effect(
             StopTimeEntryEffect(repository, dispatcherProvider) {
-                StartTimeEntryAction.TimeEntryUpdated(
+                StartEditAction.TimeEntryUpdated(
                     it.id,
                     it
                 )

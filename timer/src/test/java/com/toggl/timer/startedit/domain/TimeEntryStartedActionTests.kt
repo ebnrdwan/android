@@ -34,7 +34,7 @@ class TimeEntryStartedActionTests : FreeCoroutineSpec() {
             "with stopped entry" - {
                 reducer.testReduce(
                     initialState = initState,
-                    action = StartTimeEntryAction.TimeEntryStarted(started, stopped)
+                    action = StartEditAction.TimeEntryStarted(started, stopped)
                 ) { state, effect ->
                     "should start started time entry" {
                         state.timeEntries.shouldContain(3L to started)
@@ -50,7 +50,7 @@ class TimeEntryStartedActionTests : FreeCoroutineSpec() {
             "without stopped entry" - {
                 reducer.testReduce(
                     initialState = initState,
-                    action = StartTimeEntryAction.TimeEntryStarted(started, null)
+                    action = StartEditAction.TimeEntryStarted(started, null)
                 ) { state, effect ->
                     "should start started time entry" {
                         state.timeEntries.shouldContain(3L to started)

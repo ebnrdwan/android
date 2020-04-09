@@ -26,7 +26,7 @@ class DescriptionEnteredActionTests : FreeCoroutineSpec() {
         "The TimeEntryDescriptionChanged action" - {
             reducer.testReduce(
                 initialState = state,
-                action = StartTimeEntryAction.DescriptionEntered("new description")
+                action = StartEditAction.DescriptionEntered("new description")
             ) { state, effect ->
                 "should change EditableTimeEntry's description" {
                     state.editableTimeEntry.shouldNotBeNull()
