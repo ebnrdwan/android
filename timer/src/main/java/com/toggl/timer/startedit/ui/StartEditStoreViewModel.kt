@@ -6,6 +6,6 @@ import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditState
 import javax.inject.Inject
 
-class StartTimeEntryStoreViewModel @Inject constructor(
+class StartEditStoreViewModel @Inject constructor(
     store: Store<StartEditState, StartEditAction>
 ) : ViewModel(), Store<StartEditState, StartEditAction> by store
