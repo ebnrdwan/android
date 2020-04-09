@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.toggl.onboarding.ui.LoginViewModel
 import com.toggl.timer.log.ui.TimeEntriesLogStoreViewModel
 import com.toggl.timer.running.ui.RunningTimeEntryStoreViewModel
-import com.toggl.timer.start.ui.StartTimeEntryStoreViewModel
+import com.toggl.timer.startedit.ui.StartTimeEntryStoreViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

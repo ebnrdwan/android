@@ -2,7 +2,7 @@ package com.toggl.timer.di
 
 import com.toggl.timer.log.ui.TimeEntriesLogFragment
 import com.toggl.timer.running.ui.RunningTimeEntryFragment
-import com.toggl.timer.start.ui.StartTimeEntryDialogFragment
+import com.toggl.timer.startedit.ui.StartTimeEntryDialogFragment
 import dagger.Subcomponent
 
 @Subcomponent

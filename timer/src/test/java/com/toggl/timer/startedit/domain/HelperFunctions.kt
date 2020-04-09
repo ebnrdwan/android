@@ -1,4 +1,4 @@
-package com.toggl.timer.start.domain
+package com.toggl.timer.startedit.domain
 
 import arrow.core.mapOf
 import com.toggl.models.domain.TimeEntry

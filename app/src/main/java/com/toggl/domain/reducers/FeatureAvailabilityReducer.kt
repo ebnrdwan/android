@@ -9,7 +9,7 @@ import com.toggl.domain.AppState
 import com.toggl.models.extensions.isPro
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.common.domain.getRunningTimeEntryWorkspaceId
-import com.toggl.timer.start.domain.StartTimeEntryAction
+import com.toggl.timer.startedit.domain.StartTimeEntryAction
 
 class FeatureAvailabilityReducer(override val innerReducer: AppReducer)
     : HigherOrderReducer<AppState, AppAction> {

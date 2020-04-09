@@ -1,9 +1,9 @@
-package com.toggl.timer.start.ui
+package com.toggl.timer.startedit.ui
 
 import androidx.lifecycle.ViewModel
 import com.toggl.architecture.core.Store
-import com.toggl.timer.start.domain.StartTimeEntryAction
-import com.toggl.timer.start.domain.StartTimeEntryState
+import com.toggl.timer.startedit.domain.StartTimeEntryAction
+import com.toggl.timer.startedit.domain.StartTimeEntryState
 import javax.inject.Inject
 
 class StartTimeEntryStoreViewModel @Inject constructor(

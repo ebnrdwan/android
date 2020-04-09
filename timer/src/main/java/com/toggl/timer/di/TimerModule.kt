@@ -12,9 +12,9 @@ import com.toggl.timer.log.domain.TimeEntriesLogState
 import com.toggl.timer.running.domain.RunningTimeEntryAction
 import com.toggl.timer.running.domain.RunningTimeEntryReducer
 import com.toggl.timer.running.domain.RunningTimeEntryState
-import com.toggl.timer.start.domain.StartTimeEntryAction
-import com.toggl.timer.start.domain.StartTimeEntryReducer
-import com.toggl.timer.start.domain.StartTimeEntryState
+import com.toggl.timer.startedit.domain.StartTimeEntryAction
+import com.toggl.timer.startedit.domain.StartTimeEntryReducer
+import com.toggl.timer.startedit.domain.StartTimeEntryState
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

@@ -5,8 +5,8 @@ import com.toggl.timer.log.domain.TimeEntriesLogAction
 import com.toggl.timer.log.domain.formatForDebug
 import com.toggl.timer.running.domain.RunningTimeEntryAction
 import com.toggl.timer.running.domain.formatForDebug
-import com.toggl.timer.start.domain.StartTimeEntryAction
-import com.toggl.timer.start.domain.formatForDebug
+import com.toggl.timer.startedit.domain.StartTimeEntryAction
+import com.toggl.timer.startedit.domain.formatForDebug
 
 @optics
 sealed class TimerAction {

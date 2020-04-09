@@ -1,4 +1,4 @@
-package com.toggl.timer.start.ui
+package com.toggl.timer.startedit.ui
 
 import android.app.Dialog
 import android.content.Context

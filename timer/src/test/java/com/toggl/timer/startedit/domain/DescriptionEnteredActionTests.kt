@@ -1,4 +1,4 @@
-package com.toggl.timer.start.domain
+package com.toggl.timer.startedit.domain
 
 import com.toggl.models.domain.Workspace
 import com.toggl.repository.interfaces.TimeEntryRepository
@@ -7,31 +7,33 @@ import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduce
 import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.types.shouldBeNull
+import io.kotlintest.matchers.types.shouldNotBeNull
+import io.kotlintest.shouldBe
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-class CloseButtonTappedActionTests : FreeCoroutineSpec() {
+class DescriptionEnteredActionTests : FreeCoroutineSpec() {
     init {
         val repository = mockk<TimeEntryRepository>()
         val workspace = mockk<Workspace>()
-        val editableTimeEntry =
-            EditableTimeEntry.fromSingle(createTimeEntry(1, description = "Test"))
+        val editableTimeEntry = EditableTimeEntry.fromSingle(createTimeEntry(1, description = ""))
         val state = StartTimeEntryState(mapOf(), mapOf(1L to workspace), editableTimeEntry)
         val reducer = StartTimeEntryReducer(repository, dispatcherProvider)
         coEvery { workspace.id } returns 1
 
-        "The CloseButtonTapped action" - {
+        "The TimeEntryDescriptionChanged action" - {
             reducer.testReduce(
                 initialState = state,
-                action = StartTimeEntryAction.CloseButtonTapped
+                action = StartTimeEntryAction.DescriptionEntered("new description")
             ) { state, effect ->
-                "should nullify editableTimeEntry" {
-                    state.editableTimeEntry.shouldBeNull()
+                "should change EditableTimeEntry's description" {
+                    state.editableTimeEntry.shouldNotBeNull()
+                    state.editableTimeEntry!!.description shouldBe "new description"
+                    effect.shouldBeEmpty()
                 }
-                "shouldn't emmit any effect" {
+                "shouldn't return any effect" {
                     effect.shouldBeEmpty()
                 }
             }

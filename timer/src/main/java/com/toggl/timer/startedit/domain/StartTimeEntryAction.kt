@@ -1,4 +1,4 @@
-package com.toggl.timer.start.domain
+package com.toggl.timer.startedit.domain
 
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.domain.TimerAction
