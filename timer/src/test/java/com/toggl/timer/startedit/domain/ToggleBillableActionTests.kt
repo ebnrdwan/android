@@ -3,6 +3,7 @@ package com.toggl.timer.startedit.domain
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
+import com.toggl.timer.common.toSettableValue
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.mockk.mockk
