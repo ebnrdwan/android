@@ -12,7 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class ToggleBillableActionTests : FreeCoroutineSpec() {
     init {
         val repository = mockk<TimeEntryRepository>()
-        val reducer = StartTimeEntryReducer(repository, dispatcherProvider)
+        val reducer = StartEditReducer(repository, dispatcherProvider)
 
         "The ToggleBillable action" - {
             "should invert the values of the editable time entry" - {

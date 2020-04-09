@@ -27,7 +27,7 @@ class TimeEntryUpdatedActionTests : FreeCoroutineSpec() {
         val editableTimeEntry = EditableTimeEntry.empty(workspace.id)
         val initState = StartEditState(timeEntries, mapOf(1L to workspace), editableTimeEntry)
         val updated = timeEntries[2L]!!.copy(description = "second updated")
-        val reducer = StartTimeEntryReducer(repository, dispatcherProvider)
+        val reducer = StartEditReducer(repository, dispatcherProvider)
         coEvery { workspace.id } returns 1
 
         "The TimeEntryUpdated action" - {

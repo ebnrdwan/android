@@ -20,7 +20,7 @@ class DescriptionEnteredActionTests : FreeCoroutineSpec() {
         val workspace = mockk<Workspace>()
         val editableTimeEntry = EditableTimeEntry.fromSingle(createTimeEntry(1, description = ""))
         val state = StartEditState(mapOf(), mapOf(1L to workspace), editableTimeEntry)
-        val reducer = StartTimeEntryReducer(repository, dispatcherProvider)
+        val reducer = StartEditReducer(repository, dispatcherProvider)
         coEvery { workspace.id } returns 1
 
         "The TimeEntryDescriptionChanged action" - {

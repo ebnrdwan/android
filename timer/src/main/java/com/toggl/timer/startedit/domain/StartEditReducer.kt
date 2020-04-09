@@ -14,7 +14,7 @@ import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
 import com.toggl.timer.extensions.replaceTimeEntryWithId
 import javax.inject.Inject
 
-class StartTimeEntryReducer @Inject constructor(
+class StartEditReducer @Inject constructor(
     private val repository: TimeEntryRepository,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<StartEditState, StartEditAction> {

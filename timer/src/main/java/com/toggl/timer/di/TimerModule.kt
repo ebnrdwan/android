@@ -13,7 +13,7 @@ import com.toggl.timer.running.domain.RunningTimeEntryAction
 import com.toggl.timer.running.domain.RunningTimeEntryReducer
 import com.toggl.timer.running.domain.RunningTimeEntryState
 import com.toggl.timer.startedit.domain.StartEditAction
-import com.toggl.timer.startedit.domain.StartTimeEntryReducer
+import com.toggl.timer.startedit.domain.StartEditReducer
 import com.toggl.timer.startedit.domain.StartEditState
 import dagger.Module
 import dagger.Provides
@@ -54,7 +54,7 @@ class TimerModule {
     @Singleton
     internal fun timerReducer(
         timeEntriesLogReducer: TimeEntriesLogReducer,
-        startTimeEntryReducer: StartTimeEntryReducer,
+        startEditReducer: StartEditReducer,
         runningTimeEntryReducer: RunningTimeEntryReducer
     ): TimerReducer {
 
@@ -65,7 +65,7 @@ class TimerModule {
                 mapToGlobalState = TimeEntriesLogState.Companion::toTimerState,
                 mapToGlobalAction = TimeEntriesLogAction.Companion::toTimerAction
             ),
-            startTimeEntryReducer.pullback(
+            startEditReducer.pullback(
                 mapToLocalState = StartEditState.Companion::fromTimerState,
                 mapToLocalAction = StartEditAction.Companion::fromTimerAction,
                 mapToGlobalState = StartEditState.Companion::toTimerState,
