@@ -8,7 +8,7 @@ import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.onboarding.domain.actions.OnboardingAction
 import com.toggl.timer.common.domain.TimerAction
-import com.toggl.timer.start.domain.StartTimeEntryAction
+import com.toggl.timer.startedit.domain.StartEditAction
 import io.kotlintest.specs.FreeSpec
 import io.mockk.spyk
 import io.mockk.verify
@@ -18,7 +18,7 @@ class FeatureAvailabilityReducerTests : FreeSpec() {
 
         val allActions = listOf(
             AppAction.Loading(LoadingAction.StartLoading),
-            AppAction.Timer(TimerAction.StartTimeEntry(StartTimeEntryAction.ToggleBillable)),
+            AppAction.Timer(TimerAction.StartTimeEntry(StartEditAction.ToggleBillable)),
             AppAction.Onboarding(OnboardingAction.LoginTapped)
         )
 
@@ -43,7 +43,7 @@ class FeatureAvailabilityReducerTests : FreeSpec() {
             "For the toggle billable action" - {
                 val toggleBillableAction = AppAction.Timer(
                     TimerAction.StartTimeEntry(
-                        StartTimeEntryAction.ToggleBillable
+                        StartEditAction.ToggleBillable
                     )
                 )
 
