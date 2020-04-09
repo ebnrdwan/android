@@ -3,7 +3,6 @@ package com.toggl.timer.startedit.domain
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
-import com.toggl.timer.common.toSettableValue
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.mockk.mockk
@@ -18,7 +17,7 @@ class ToggleBillableActionTests : FreeCoroutineSpec() {
         "The ToggleBillable action" - {
             "should invert the values of the editable time entry" - {
                 Gen.bool().constants().forEach { originalBillableValue ->
-                    var state = StartTimeEntryState.editableTimeEntry
+                    var state = StartEditState.editableTimeEntry
                         .modify(createInitialState()) { it.copy(billable = originalBillableValue) }
                     val settableValue = state.toSettableValue { state = it }
 

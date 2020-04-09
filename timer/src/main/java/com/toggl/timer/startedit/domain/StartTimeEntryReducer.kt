@@ -17,10 +17,10 @@ import javax.inject.Inject
 class StartTimeEntryReducer @Inject constructor(
     private val repository: TimeEntryRepository,
     private val dispatcherProvider: DispatcherProvider
-) : Reducer<StartTimeEntryState, StartTimeEntryAction> {
+) : Reducer<StartEditState, StartTimeEntryAction> {
 
     override fun reduce(
-        state: SettableValue<StartTimeEntryState>,
+        state: SettableValue<StartEditState>,
         action: StartTimeEntryAction
     ): List<Effect<StartTimeEntryAction>> =
         when (action) {
@@ -30,7 +30,7 @@ class StartTimeEntryReducer @Inject constructor(
                 noEffect()
             }
             is StartTimeEntryAction.DescriptionEntered -> {
-                state.value = StartTimeEntryState.editableTimeEntry.modify(state.value) {
+                state.value = StartEditState.editableTimeEntry.modify(state.value) {
                     it.copy(description = action.description)
                 }
                 noEffect()
@@ -56,7 +56,7 @@ class StartTimeEntryReducer @Inject constructor(
                 noEffect()
             }
             StartTimeEntryAction.ToggleBillable -> {
-                state.value = StartTimeEntryState.editableTimeEntry.modify(state.value) {
+                state.value = StartEditState.editableTimeEntry.modify(state.value) {
                     it.copy(billable = !it.billable)
                 }
 

@@ -20,7 +20,7 @@ class StopTimeEntryButtonTappedActionTests : FreeCoroutineSpec() {
         val workspace = mockk<Workspace>()
         coEvery { workspace.id } returns 1
         val editableTimeEntry = EditableTimeEntry.empty(workspace.id)
-        val initState = StartTimeEntryState(mapOf(), mapOf(1L to workspace), editableTimeEntry)
+        val initState = StartEditState(mapOf(), mapOf(1L to workspace), editableTimeEntry)
         val reducer = StartTimeEntryReducer(repository, dispatcherProvider)
 
         "The StopTimeEntryButtonTapped action" - {

@@ -25,7 +25,7 @@ class TimeEntryStartedActionTests : FreeCoroutineSpec() {
             2L to createTimeEntry(2, "second", duration = null)
         )
         val editableTimeEntry = EditableTimeEntry.empty(workspace.id)
-        val initState = StartTimeEntryState(timeEntries, mapOf(1L to workspace), editableTimeEntry)
+        val initState = StartEditState(timeEntries, mapOf(1L to workspace), editableTimeEntry)
         val started = createTimeEntry(3, "started", duration = null)
         val stopped = timeEntries[2L]!!.copy(duration = Duration.ofHours(2))
         val reducer = StartTimeEntryReducer(repository, dispatcherProvider)

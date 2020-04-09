@@ -19,7 +19,7 @@ class CloseButtonTappedActionTests : FreeCoroutineSpec() {
         val workspace = mockk<Workspace>()
         val editableTimeEntry =
             EditableTimeEntry.fromSingle(createTimeEntry(1, description = "Test"))
-        val state = StartTimeEntryState(mapOf(), mapOf(1L to workspace), editableTimeEntry)
+        val state = StartEditState(mapOf(), mapOf(1L to workspace), editableTimeEntry)
         val reducer = StartTimeEntryReducer(repository, dispatcherProvider)
         coEvery { workspace.id } returns 1
 
