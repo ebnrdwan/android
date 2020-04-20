@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -27,15 +28,18 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.toggl.common.Constants.elapsedTimeIndicatorUpdateDelayMs
 import com.toggl.common.performClickHapticFeedback
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
 import com.toggl.common.sheet.OnStateChangedAction
+import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.timer.R
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.di.TimerComponentProvider
+import com.toggl.timer.extensions.formatForDisplaying
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditState
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
@@ -49,6 +53,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
+import org.threeten.bp.Duration
+import org.threeten.bp.OffsetDateTime
 import javax.inject.Inject
 import com.toggl.common.R as CommonR
 
@@ -60,6 +66,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private val store: StartEditStoreViewModel by viewModels { viewModelFactory }
 
     private var descriptionChangeListener: TextWatcher? = null
+    private var timeIndicatorScheduledUpdate: (() -> Unit)? = null
 
     private val bottomSheetCallback = BottomSheetCallback()
 
@@ -149,6 +156,13 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .launchIn(lifecycleScope)
 
         store.state
+            .filterNot { it.editableTimeEntry == null }
+            .map { it.getTimeEntryForEditable() }
+            .distinctUntilChanged()
+            .onEach { time_indicator.setDuration(it) }
+            .launchIn(lifecycleScope)
+
+        store.state
             .filter { it.editableTimeEntry == null }
             .distinctUntilChanged()
             .onEach {
@@ -163,6 +177,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         bottomSheetCallback.clear()
         store.dispatch(StartEditAction.DialogDismissed)
         time_entry_description.removeTextChangedListener(descriptionChangeListener)
+        timeIndicatorScheduledUpdate?.let { time_indicator.removeCallbacks(it) }
         super.onDestroyView()
     }
 
@@ -234,5 +249,36 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 startEditState.workspaces[startEditState.editableTimeEntry.workspaceId]?.isPro() ?: false
             )
         }
+    }
+
+    private fun TextView.setDuration(timeEntry: TimeEntry?) {
+        timeIndicatorScheduledUpdate?.let { this.removeCallbacks(it) }
+
+        var durationToSet = Duration.ZERO
+        if (timeEntry != null) {
+            durationToSet =
+                when (timeEntry.duration) {
+                    null -> {
+                        timeIndicatorScheduledUpdate = {
+                            setDuration(timeEntry)
+                        }
+                        this.postDelayed(timeIndicatorScheduledUpdate, elapsedTimeIndicatorUpdateDelayMs)
+                        Duration.between(timeEntry.startTime, OffsetDateTime.now())
+                    }
+                    else -> timeEntry.duration
+                }
+        }
+
+        this.text = durationToSet.formatForDisplaying()
+    }
+
+    private fun StartEditState.getTimeEntryForEditable() : TimeEntry? {
+        val editableId = this.editableTimeEntry?.ids?.getOrNull(0)
+
+        editableId?.let {
+            return this.timeEntries[editableId]
+        }
+
+        return null
     }
 }
