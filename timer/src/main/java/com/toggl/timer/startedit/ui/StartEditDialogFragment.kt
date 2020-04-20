@@ -272,7 +272,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         this.text = durationToSet.formatForDisplaying()
     }
 
-    private fun StartEditState.getTimeEntryForEditable() : TimeEntry? {
+    private fun StartEditState.getTimeEntryForEditable(): TimeEntry? {
         val editableId = this.editableTimeEntry?.ids?.getOrNull(0)
 
         editableId?.let {
