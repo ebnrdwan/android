@@ -67,7 +67,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private val store: StartEditStoreViewModel by viewModels { viewModelFactory }
 
     private var descriptionChangeListener: TextWatcher? = null
-    private var timeIndicatorScheduledUpdate: (() -> Unit)? = null
+    private var timeIndicatorScheduledUpdate: Runnable? = null
 
     private val bottomSheetCallback = BottomSheetCallback()
 
@@ -269,7 +269,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
     private fun scheduleTimeEntryIndicatorUpdate(timeEntry: TimeEntry, view: TextView) {
         timeIndicatorScheduledUpdate?.let { view.removeCallbacks(it) }
-        timeIndicatorScheduledUpdate = {
+        timeIndicatorScheduledUpdate = Runnable {
             view.setDurationAndScheduleUpdates(timeEntry)
         }
         view.postDelayed(timeIndicatorScheduledUpdate, elapsedTimeIndicatorUpdateDelayMs)
