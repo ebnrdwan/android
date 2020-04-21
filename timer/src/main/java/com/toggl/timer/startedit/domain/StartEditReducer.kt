@@ -5,6 +5,7 @@ import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
+import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.interfaces.TimeEntryRepository
@@ -63,7 +64,7 @@ class StartEditReducer @Inject constructor(
                 state.mutateWithoutEffects {
                     editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                     StartEditState.editableTimeEntry.modify(this) {
-                        it.copy(description = it.description + " @")
+                        it.copy(description = if (it.description.isEmpty()) "@" else it.description + " @")
                     }
                 }
             StartEditAction.TagButtonTapped ->
@@ -92,6 +93,8 @@ class StartEditReducer @Inject constructor(
             }
             is StartEditAction.AutocompleteSuggestionsUpdated ->
                 state.mutateWithoutEffects { copy(autocompleteSuggestions = action.autocompleteSuggestions) }
+            is StartEditAction.AutocompleteSuggestionTapped ->
+                noEffect()
         }
 
     private fun startTimeEntry(editableTimeEntry: EditableTimeEntry) =
