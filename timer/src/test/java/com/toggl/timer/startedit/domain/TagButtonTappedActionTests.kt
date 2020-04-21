@@ -3,6 +3,7 @@ package com.toggl.timer.startedit.domain
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.assertNoEffectsWereReturned
+import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.toMutableValue
 import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
@@ -34,9 +35,19 @@ internal class TagButtonTappedActionTests {
     }
 
     @Test
-    fun `should append @ to description and return no effects`() = runBlockingTest {
+    fun `should set the description to # if it was empty and return no effects`() = runBlockingTest {
         reducer.testReduce(initialState, StartEditAction.TagButtonTapped) { state, effects ->
-            state.editableTimeEntry!!.description shouldBe initialState.editableTimeEntry!!.description + " #"
+            state.editableTimeEntry!!.description shouldBe "#"
+            assertNoEffectsWereReturned(state, effects)
+        }
+    }
+
+    @Test
+    fun `should append # to description and return no effects`() = runBlockingTest {
+        val editableWithDescription = EditableTimeEntry(listOf(), 1, "asdf", false, null)
+
+        reducer.testReduce(initialState.copy(editableTimeEntry = editableWithDescription), StartEditAction.TagButtonTapped) { state, effects ->
+            state.editableTimeEntry!!.description shouldBe editableWithDescription.description + " #"
             assertNoEffectsWereReturned(state, effects)
         }
     }

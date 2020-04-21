@@ -70,7 +70,7 @@ class StartEditReducer @Inject constructor(
                 state.mutateWithoutEffects {
                     editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                     StartEditState.editableTimeEntry.modify(this) {
-                        it.copy(description = it.description + " #")
+                        it.copy(description = if (it.description.isEmpty()) "#" else it.description + " #")
                     }
                 }
             StartEditAction.DoneButtonTapped -> {
