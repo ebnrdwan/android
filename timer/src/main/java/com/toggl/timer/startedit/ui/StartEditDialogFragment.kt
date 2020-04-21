@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
@@ -19,7 +18,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -28,7 +26,9 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.toggl.common.doSafeAfterTextChanged
 import com.toggl.common.performClickHapticFeedback
+import com.toggl.common.setSafeText
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
 import com.toggl.common.sheet.OnStateChangedAction
@@ -61,7 +61,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private val store: StartEditStoreViewModel by viewModels { viewModelFactory }
 
     private var descriptionChangeListener: TextWatcher? = null
-    private var lastDispatchedDescription: String? = null
 
     private val bottomSheetCallback = BottomSheetCallback()
 
@@ -132,9 +131,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 }
             }
             requestFocus()
-            descriptionChangeListener = time_entry_description.addTextChangedListener {
+            descriptionChangeListener = time_entry_description.doSafeAfterTextChanged {
                 val action = StartEditAction.DescriptionEntered(text.toString())
-                lastDispatchedDescription = action.description
                 store.dispatch(action)
             }
         }
@@ -146,12 +144,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         store.state
             .filterNot { it.editableTimeEntry?.ids.isNullOrEmpty() }
             .mapNotNull { it.editableTimeEntry?.description }
-            .onEach {
-                if (lastDispatchedDescription == null || lastDispatchedDescription == it) {
-                    time_entry_description.setTextIfDifferentAndUpdateSelection(it)
-                    lastDispatchedDescription = null
-                }
-            }
+            .onEach { time_entry_description.setSafeText(it) }
             .launchIn(lifecycleScope)
 
         store.state
@@ -243,13 +236,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 startEditState.editableTimeEntry!!,
                 startEditState.workspaces[startEditState.editableTimeEntry.workspaceId]?.isPro() ?: false
             )
-        }
-    }
-
-    private fun EditText.setTextIfDifferentAndUpdateSelection(newText: String) {
-        if (newText != this.text.toString()) {
-            this.setText(newText)
-            this.setSelection(newText.length)
         }
     }
 }
