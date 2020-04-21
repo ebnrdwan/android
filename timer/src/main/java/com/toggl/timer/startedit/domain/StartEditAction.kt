@@ -14,6 +14,7 @@ sealed class StartEditAction {
     data class TimeEntryUpdated(val id: Long, val timeEntry: TimeEntry) : StartEditAction()
     data class TimeEntryStarted(val startedTimeEntry: TimeEntry, val stoppedTimeEntry: TimeEntry?) : StartEditAction()
     data class AutocompleteSuggestionsUpdated(val autocompleteSuggestions: List<AutocompleteSuggestion>) : StartEditAction()
+    data class AutocompleteSuggestionTapped(val autocompleteSuggestion: AutocompleteSuggestion) : StartEditAction()
 
     companion object {
         fun fromTimerAction(timerAction: TimerAction): StartEditAction? =
@@ -38,4 +39,5 @@ fun StartEditAction.formatForDebug() =
         is StartEditAction.TimeEntryStarted -> "Time entry started with id $startedTimeEntry.id"
         StartEditAction.BillableTapped -> "Billable toggled in the running time entry"
         is StartEditAction.AutocompleteSuggestionsUpdated -> "AutocompleteSuggestions updated with $autocompleteSuggestions"
+        is StartEditAction.AutocompleteSuggestionTapped -> "AutocompleteSuggestion tapped: $autocompleteSuggestion"
     }
