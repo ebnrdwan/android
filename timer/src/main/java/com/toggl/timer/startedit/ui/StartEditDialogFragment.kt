@@ -45,6 +45,7 @@ import com.toggl.timer.startedit.domain.StartEditState
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
 import kotlinx.android.synthetic.main.fragment_dialog_start_edit.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNot
@@ -162,15 +163,17 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .onEach { time_indicator.setDuration(it) }
             .launchIn(lifecycleScope)
 
-        store.state
-            .filter { it.editableTimeEntry == null }
-            .distinctUntilChanged()
-            .onEach {
-                if (isVisible) {
-                    findNavController().popBackStack()
+        lifecycleScope.launchWhenStarted {
+            store.state
+                .filter{ it.editableTimeEntry == null }
+                .distinctUntilChanged()
+                .onEach {
+                    if (dialog?.isShowing == true) {
+                        findNavController().popBackStack()
+                    }
                 }
-            }
-            .launchIn(lifecycleScope)
+                .collect()
+        }
     }
 
     override fun onDestroyView() {
@@ -275,10 +278,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private fun StartEditState.getTimeEntryForEditable(): TimeEntry? {
         val editableId = this.editableTimeEntry?.ids?.getOrNull(0)
 
-        editableId?.let {
-            return this.timeEntries[editableId]
-        }
-
-        return null
+        return timeEntries[editableId].takeIf { editableId != null }
     }
 }
