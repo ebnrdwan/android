@@ -220,6 +220,10 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             project_action.setOnClickListener {
                 store.dispatch(StartEditAction.ProjectButtonTapped)
             }
+
+            tag_action.setOnClickListener {
+                store.dispatch(StartEditAction.TagButtonTapped)
+            }
         }
     }
 
