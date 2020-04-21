@@ -2,7 +2,6 @@ package com.toggl.common
 
 import android.content.Context
 import android.content.res.Resources
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 
@@ -19,5 +18,3 @@ val Context.deepLinks: DeepLinkUrls
 
 val Fragment.deepLinks: DeepLinkUrls
     get() = DeepLinkUrls(resources)
-
-fun Any.log(msg: String) = Log.e("xxaa", msg)
