@@ -6,7 +6,7 @@ import android.widget.EditText
 import androidx.core.widget.doAfterTextChanged
 
 fun EditText.setSafeText(newText: String) {
-    val lastDispatchedDescription = tag as? String
+    val lastDispatchedDescription = this.tag as? String
     if (lastDispatchedDescription == null || lastDispatchedDescription == newText) {
         if (newText != this.text.toString()) {
             this.setText(newText)
