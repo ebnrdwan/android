@@ -142,7 +142,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         }
 
         store.state
-            .filterNot { it.editableTimeEntry?.ids.isNullOrEmpty() }
+            .filterNot { it.editableTimeEntry == null }
             .mapNotNull { it.editableTimeEntry?.description }
             .onEach { time_entry_description.setSafeText(it) }
             .launchIn(lifecycleScope)
