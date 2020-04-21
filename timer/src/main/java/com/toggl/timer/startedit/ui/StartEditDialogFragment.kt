@@ -160,7 +160,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .filterNot { it.editableTimeEntry == null }
             .map { it.getTimeEntryForEditable() }
             .distinctUntilChanged()
-            .onEach { time_indicator.setDuration(it) }
+            .onEach { time_indicator.setDurationAndScheduleUpdates(it) }
             .launchIn(lifecycleScope)
 
         lifecycleScope.launchWhenStarted {
@@ -254,18 +254,13 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun TextView.setDuration(timeEntry: TimeEntry?) {
-        timeIndicatorScheduledUpdate?.let { this.removeCallbacks(it) }
-
+    private fun TextView.setDurationAndScheduleUpdates(timeEntry: TimeEntry?) {
         var durationToSet = Duration.ZERO
         if (timeEntry != null) {
             durationToSet =
                 when (timeEntry.duration) {
                     null -> {
-                        timeIndicatorScheduledUpdate = {
-                            setDuration(timeEntry)
-                        }
-                        this.postDelayed(timeIndicatorScheduledUpdate, elapsedTimeIndicatorUpdateDelayMs)
+                        scheduleTimeEntryIndicatorUpdate(timeEntry, this)
                         Duration.between(timeEntry.startTime, OffsetDateTime.now())
                     }
                     else -> timeEntry.duration
@@ -273,6 +268,14 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         }
 
         this.text = durationToSet.formatForDisplaying()
+    }
+
+    private fun scheduleTimeEntryIndicatorUpdate(timeEntry: TimeEntry, view: TextView) {
+        timeIndicatorScheduledUpdate?.let { view.removeCallbacks(it) }
+        timeIndicatorScheduledUpdate = {
+            view.setDurationAndScheduleUpdates(timeEntry)
+        }
+        view.postDelayed(timeIndicatorScheduledUpdate, elapsedTimeIndicatorUpdateDelayMs)
     }
 
     private fun StartEditState.getTimeEntryForEditable(): TimeEntry? {
