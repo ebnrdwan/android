@@ -165,7 +165,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
         lifecycleScope.launchWhenStarted {
             store.state
-                .filter{ it.editableTimeEntry == null }
+                .filter { it.editableTimeEntry == null }
                 .distinctUntilChanged()
                 .onEach {
                     if (dialog?.isShowing == true) {
@@ -255,17 +255,14 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun TextView.setDurationAndScheduleUpdates(timeEntry: TimeEntry?) {
-        var durationToSet = Duration.ZERO
-        if (timeEntry != null) {
-            durationToSet =
-                when (timeEntry.duration) {
-                    null -> {
-                        scheduleTimeEntryIndicatorUpdate(timeEntry, this)
-                        Duration.between(timeEntry.startTime, OffsetDateTime.now())
-                    }
-                    else -> timeEntry.duration
+        val durationToSet = if (timeEntry == null) Duration.ZERO else
+            when (timeEntry.duration) {
+                null -> {
+                    scheduleTimeEntryIndicatorUpdate(timeEntry, this)
+                    Duration.between(timeEntry.startTime, OffsetDateTime.now())
                 }
-        }
+                else -> timeEntry.duration!!
+            }
 
         this.text = durationToSet.formatForDisplaying()
     }
