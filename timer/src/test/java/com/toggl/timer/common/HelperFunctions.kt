@@ -12,7 +12,7 @@ fun createTimeEntry(
     id: Long,
     description: String = "",
     startTime: OffsetDateTime = OffsetDateTime.now(),
-    duration: Duration? = null,
+    duration: Duration? = Duration.ofMinutes(2),
     billable: Boolean = false,
     projectId: Long? = null
 ) =
