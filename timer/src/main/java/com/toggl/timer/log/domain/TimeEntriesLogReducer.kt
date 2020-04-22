@@ -48,7 +48,7 @@ class TimeEntriesLogReducer @Inject constructor(
                 is TimeEntriesLogAction.TimeEntryGroupTapped ->
                     state.mutateWithoutEffects {
                         val entryToEdit = state().timeEntries[action.ids.first()]
-                            ?.run { EditableTimeEntry.fromGroup(action.ids, this) }
+                            ?.run { EditableTimeEntry.fromGroup(action.ids, this, state().timeEntries) }
                             ?: throw TimeEntryDoesNotExistException()
 
                         copy(editableTimeEntry = entryToEdit)
@@ -73,7 +73,7 @@ class TimeEntriesLogReducer @Inject constructor(
                             handleDeletingSwipe(state, action.ids)
                         SwipeDirection.Right -> {
                             val timeEntryToStart = state().timeEntries[action.ids.first()]
-                                ?.let { EditableTimeEntry.fromGroup(action.ids, it) }
+                                ?.let { EditableTimeEntry.fromGroup(action.ids, it, state().timeEntries) }
                                 ?: throw TimeEntryDoesNotExistException()
                             startTimeEntry(timeEntryToStart, repository)
                         }
