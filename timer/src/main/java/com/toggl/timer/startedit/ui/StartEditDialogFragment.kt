@@ -45,6 +45,8 @@ import com.toggl.timer.startedit.domain.StartEditState
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
 import kotlinx.android.synthetic.main.fragment_dialog_start_edit.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -69,7 +71,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private val store: StartEditStoreViewModel by viewModels { viewModelFactory }
 
     private var descriptionChangeListener: TextWatcher? = null
-    private var timeIndicatorScheduledUpdate: Runnable? = null
+    private var timeIndicatorScheduledUpdate: Job? = null
 
     private val bottomSheetCallback = BottomSheetCallback()
 
@@ -112,6 +114,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
+    @kotlinx.coroutines.FlowPreview
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -160,8 +163,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
         store.state
             .mapNotNull { it.editableTimeEntry }
-            .distinctUntilChanged()
-            .onEach { time_indicator.setDurationAndScheduleUpdates(it) }
+            .distinctUntilChanged { old, new -> old.ids == new.ids }
+            .onEach { scheduleTimeEntryIndicatorUpdate(it) }
             .launchIn(lifecycleScope)
 
         lifecycleScope.launchWhenStarted {
@@ -181,7 +184,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         bottomSheetCallback.clear()
         store.dispatch(StartEditAction.DialogDismissed)
         time_entry_description.removeTextChangedListener(descriptionChangeListener)
-        timeIndicatorScheduledUpdate?.let { time_indicator.removeCallbacks(it) }
         super.onDestroyView()
     }
 
@@ -255,24 +257,28 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun TextView.setDurationAndScheduleUpdates(editableTimeEntry: EditableTimeEntry) {
-        val durationToSet =
-            when (editableTimeEntry.duration) {
-                null -> {
-                    scheduleTimeEntryIndicatorUpdate(editableTimeEntry, this)
-                    Duration.between(editableTimeEntry.startTime, timeService.now())
-                }
-                else -> editableTimeEntry.duration
-            }
-
-        this.text = durationToSet.formatForDisplaying()
+    private fun TextView.setDurationIfDifferent(duration: Duration) {
+        val newDurationText = duration.formatForDisplaying()
+        if (this.text != newDurationText) {
+            this.text = newDurationText
+        }
     }
 
-    private fun scheduleTimeEntryIndicatorUpdate(editableTimeEntry: EditableTimeEntry, view: TextView) {
-        timeIndicatorScheduledUpdate?.let { view.removeCallbacks(it) }
-        timeIndicatorScheduledUpdate = Runnable {
-            view.setDurationAndScheduleUpdates(editableTimeEntry)
+    private fun EditableTimeEntry.getDurationForDisplaying() =
+        when (this.duration) {
+            null -> {
+                Duration.between(this.startTime, timeService.now())
+            }
+            else -> this.duration
         }
-        view.postDelayed(timeIndicatorScheduledUpdate, elapsedTimeIndicatorUpdateDelayMs)
+
+    private fun scheduleTimeEntryIndicatorUpdate(editableTimeEntry: EditableTimeEntry) {
+        timeIndicatorScheduledUpdate?.cancel()
+        timeIndicatorScheduledUpdate = lifecycleScope.launchWhenCreated {
+            while (true) {
+                time_indicator.setDurationIfDifferent(editableTimeEntry.getDurationForDisplaying())
+                delay(elapsedTimeIndicatorUpdateDelayMs)
+            }
+        }
     }
 }
