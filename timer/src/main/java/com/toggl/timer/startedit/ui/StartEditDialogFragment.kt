@@ -33,7 +33,7 @@ import com.toggl.common.performClickHapticFeedback
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
 import com.toggl.common.sheet.OnStateChangedAction
-import com.toggl.models.domain.TimeEntry
+import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.timer.R
@@ -55,7 +55,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
 import org.threeten.bp.Duration
-import org.threeten.bp.OffsetDateTime
 import javax.inject.Inject
 import com.toggl.common.R as CommonR
 
@@ -63,6 +62,9 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var timeService: TimeService
 
     private val store: StartEditStoreViewModel by viewModels { viewModelFactory }
 
@@ -157,8 +159,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .launchIn(lifecycleScope)
 
         store.state
-            .filterNot { it.editableTimeEntry == null }
-            .map { it.getTimeEntryForEditable() }
+            .mapNotNull { it.editableTimeEntry }
             .distinctUntilChanged()
             .onEach { time_indicator.setDurationAndScheduleUpdates(it) }
             .launchIn(lifecycleScope)
@@ -254,30 +255,24 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun TextView.setDurationAndScheduleUpdates(timeEntry: TimeEntry?) {
-        val durationToSet = if (timeEntry == null) Duration.ZERO else
-            when (timeEntry.duration) {
+    private fun TextView.setDurationAndScheduleUpdates(editableTimeEntry: EditableTimeEntry) {
+        val durationToSet =
+            when (editableTimeEntry.duration) {
                 null -> {
-                    scheduleTimeEntryIndicatorUpdate(timeEntry, this)
-                    Duration.between(timeEntry.startTime, OffsetDateTime.now())
+                    scheduleTimeEntryIndicatorUpdate(editableTimeEntry, this)
+                    Duration.between(editableTimeEntry.startTime, timeService.now())
                 }
-                else -> timeEntry.duration!!
+                else -> editableTimeEntry.duration
             }
 
         this.text = durationToSet.formatForDisplaying()
     }
 
-    private fun scheduleTimeEntryIndicatorUpdate(timeEntry: TimeEntry, view: TextView) {
+    private fun scheduleTimeEntryIndicatorUpdate(editableTimeEntry: EditableTimeEntry, view: TextView) {
         timeIndicatorScheduledUpdate?.let { view.removeCallbacks(it) }
         timeIndicatorScheduledUpdate = Runnable {
-            view.setDurationAndScheduleUpdates(timeEntry)
+            view.setDurationAndScheduleUpdates(editableTimeEntry)
         }
         view.postDelayed(timeIndicatorScheduledUpdate, elapsedTimeIndicatorUpdateDelayMs)
-    }
-
-    private fun StartEditState.getTimeEntryForEditable(): TimeEntry? {
-        val editableId = this.editableTimeEntry?.ids?.getOrNull(0)
-
-        return timeEntries[editableId].takeIf { editableId != null }
     }
 }
