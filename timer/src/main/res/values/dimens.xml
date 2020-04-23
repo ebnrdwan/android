@@ -5,4 +5,5 @@
     <dimen name="time_entry_log_item_height">72dp</dimen>
     <dimen name="time_entry_log_side_padding">16dp</dimen>
     <dimen name="time_entry_edit_half_expanded_height">164dp</dimen>
+    <dimen name="wheel_top_margin">24dp</dimen>
 </resources>

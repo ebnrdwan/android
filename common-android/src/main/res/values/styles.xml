@@ -1,8 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/divider</item>
+    </style>
+
+    <style name="CircleDivider">
+        <item name="android:layout_width">@dimen/circle_divider_size</item>
+        <item name="android:layout_height">@dimen/circle_divider_size</item>
+        <item name="android:layout_marginStart">@dimen/circle_divider_margin</item>
+        <item name="android:layout_marginEnd">@dimen/circle_divider_margin</item>
+        <item name="android:background">@drawable/circle_divider</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
+    <style name="ClickableText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="ClickableTextPrimary" parent="ClickableText">
+        <item name="android:textColor">@color/clickable_text_primary</item>
+    </style>
+
+    <style name="ClickableTextSecondary" parent="ClickableText">
+        <item name="android:textColor">@color/clickable_text_secondary</item>
+    </style>
+
 </resources>

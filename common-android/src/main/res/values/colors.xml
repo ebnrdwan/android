@@ -19,4 +19,6 @@
   <color name="button_active">#06AAF5</color>
   <color name="button_active_background">#2606AAF5</color>
   <color name="button_inactive">#B5BCC0</color>
+  <color name="clickable_text_primary">#328FFF</color>
+  <color name="clickable_text_secondary">#2196F3</color>
 </resources>
