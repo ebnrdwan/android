@@ -36,172 +36,185 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/time_entry_description_input_layout"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/description"
+        android:paddingBottom="@dimen/bottom_control_panel_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time_indicator">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/time_entry_description"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:inputType="text"
-            tools:ignore="Autofill" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="match_parent">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/time_entry_description_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/time_entry_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:inputType="text"
+                    tools:ignore="Autofill" />
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-    <HorizontalScrollView
-        android:id="@+id/chip_group_scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/time_entry_description_input_layout">
+            <HorizontalScrollView
+                android:id="@+id/chip_group_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/time_entry_description_input_layout">
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chip_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:singleLine="true">
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleLine="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/add_project"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add a Project"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/add_tag"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add Tags"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <View
+                android:id="@+id/extended_options_divider"
+                style="@style/Divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/chip_group_scroll_view" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/add_project"
-                style="@style/Widget.MaterialComponents.Chip.Action"
+                android:id="@+id/billable_action"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add a Project"
+                android:text="Billable"
+                app:chipIcon="@drawable/ic_billable"
+                app:chipIconVisible="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/extended_options_divider" />
+
+            <View
+                android:id="@+id/billable_divider"
+                style="@style/Divider"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/billable_action" />
 
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/add_tag"
-                style="@style/Widget.MaterialComponents.Chip.Action"
+            <TextView
+                android:id="@+id/start_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add Tags"
+                android:drawableStart="@drawable/ic_play"
+                android:text="Start"
+                app:layout_constraintEnd_toStartOf="@+id/stop_header"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/billable_divider" />
+
+            <TextView
+                android:id="@+id/stop_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_stop"
+                android:text="Stop"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@id/start_header"
+                app:layout_constraintTop_toBottomOf="@id/billable_divider" />
 
-        </com.google.android.material.chip.ChipGroup>
-    </HorizontalScrollView>
+            <LinearLayout
+                android:id="@+id/start_data_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="@id/start_header"
+                app:layout_constraintStart_toStartOf="@id/start_header"
+                app:layout_constraintTop_toBottomOf="@id/start_header">
 
-    <View
-        android:id="@+id/extended_options_divider"
-        style="@style/Divider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chip_group_scroll_view" />
+                <TextView
+                    android:id="@+id/start_time_label"
+                    style="@style/ClickableTextPrimary"
+                    android:text="12:00 PM" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/billable_action"
-        style="@style/Widget.MaterialComponents.Chip.Choice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Billable"
-        app:chipIcon="@drawable/ic_billable"
-        app:chipIconVisible="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/extended_options_divider" />
+                <View
+                    android:id="@+id/start_divider"
+                    style="@style/CircleDivider" />
 
-    <View
-        android:id="@+id/billable_divider"
-        style="@style/Divider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/billable_action" />
+                <TextView
+                    android:id="@+id/start_date_label"
+                    style="@style/ClickableTextSecondary"
+                    android:text="02/22" />
 
-    <TextView
-        android:id="@+id/start_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_play"
-        android:text="Start"
-        app:layout_constraintEnd_toStartOf="@+id/stop_header"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/billable_divider" />
+            </LinearLayout>
 
-    <TextView
-        android:id="@+id/stop_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableStart="@drawable/ic_stop"
-        android:text="Stop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/start_header"
-        app:layout_constraintTop_toBottomOf="@id/billable_divider" />
+            <LinearLayout
+                android:id="@+id/stop_data_holder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="@id/stop_header"
+                app:layout_constraintStart_toStartOf="@id/stop_header"
+                app:layout_constraintTop_toBottomOf="@id/stop_header">
 
-    <LinearLayout
-        android:id="@+id/start_data_holder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@id/start_header"
-        app:layout_constraintStart_toStartOf="@id/start_header"
-        app:layout_constraintTop_toBottomOf="@id/start_header">
+                <TextView
+                    android:id="@+id/stop_time_label"
+                    style="@style/ClickableTextPrimary"
+                    android:text="Stop timer" />
 
-        <TextView
-            android:id="@+id/start_time_label"
-            style="@style/ClickableTextPrimary"
-            android:text="12:00 PM" />
+                <View
+                    android:id="@+id/stop_divider"
+                    style="@style/CircleDivider" />
 
-        <View
-            android:id="@+id/start_divider"
-            style="@style/CircleDivider" />
+                <TextView
+                    android:id="@+id/stop_date_label"
+                    style="@style/ClickableTextSecondary"
+                    android:text="02/22" />
 
-        <TextView
-            android:id="@+id/start_date_label"
-            style="@style/ClickableTextSecondary"
-            android:text="02/22" />
+            </LinearLayout>
 
-    </LinearLayout>
+            <View
+                android:id="@+id/wheel_placeholder"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="@dimen/wheel_top_margin"
+                android:background="@color/button_active"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/start_data_holder" />
 
-    <LinearLayout
-        android:id="@+id/stop_data_holder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@id/stop_header"
-        app:layout_constraintStart_toStartOf="@id/stop_header"
-        app:layout_constraintTop_toBottomOf="@id/stop_header">
-
-        <TextView
-            android:id="@+id/stop_time_label"
-            style="@style/ClickableTextPrimary"
-            android:text="Stop timer" />
-
-        <View
-            android:id="@+id/stop_divider"
-            style="@style/CircleDivider" />
-
-        <TextView
-            android:id="@+id/stop_date_label"
-            style="@style/ClickableTextSecondary"
-            android:text="02/22" />
-
-    </LinearLayout>
-
-    <View
-        android:id="@+id/wheel_placeholder"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="@dimen/wheel_top_margin"
-        android:background="@color/button_active"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/start_data_holder" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/extended_options"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="billable_action,billable_divider,start_header,start_data_holder,stop_header,stop_data_holder,wheel_placeholder"
-        app:layout_constraintStart_toEndOf="parent"
-        tools:visibility="visible" />
-
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/extended_options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="billable_action,billable_divider,start_header,start_data_holder,stop_header,stop_data_holder,wheel_placeholder"
+                app:layout_constraintStart_toEndOf="parent"
+                tools:visibility="visible" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
