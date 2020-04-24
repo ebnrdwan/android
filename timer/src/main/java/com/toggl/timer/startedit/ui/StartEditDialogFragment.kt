@@ -17,7 +17,6 @@ import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -33,7 +32,6 @@ import com.toggl.common.performClickHapticFeedback
 import com.toggl.common.setSafeText
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
-import com.toggl.common.sheet.OnStateChangedAction
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
@@ -41,6 +39,8 @@ import com.toggl.timer.R
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.extensions.formatForDisplaying
+import com.toggl.timer.extensions.formatForDisplayingDate
+import com.toggl.timer.extensions.formatForDisplayingTime
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditState
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
@@ -77,6 +77,10 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private val bottomSheetCallback = BottomSheetCallback()
 
     private lateinit var bottomControlPanelAnimator: BottomControlPanelAnimator
+    private lateinit var hideableStartViews: List<View>
+    private lateinit var hideableStopViews: List<View>
+    private lateinit var allExtentedOptions: List<View>
+    private lateinit var optionsAvailableForGroups: List<View>
 
     override fun onAttach(context: Context) {
         (requireActivity().applicationContext as TimerComponentProvider)
@@ -120,16 +124,25 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        extended_options.referencedIds
-            .map { view.findViewById<View>(it) }
-            .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
+        hideableStartViews = listOf(start_divider, start_date_label)
+        hideableStopViews = listOf(stop_divider, stop_date_label)
+        allExtentedOptions = listOf(
+            start_header,
+            start_time_label,
+            start_divider,
+            start_date_label,
+            stop_header,
+            stop_time_label,
+            stop_divider,
+            stop_date_label,
+            billable_chip,
+            billable_divider,
+            wheel_placeholder
+        )
+        optionsAvailableForGroups = listOf(billable_chip, billable_divider)
 
-        bottomSheetCallback.addOnStateChangedAction(object : OnStateChangedAction {
-            override fun onStateChanged(sheet: View, newState: Int) {
-                extended_options.isInvisible =
-                    newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN
-            }
-        })
+        allExtentedOptions
+            .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
 
         val bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
         with(bottomSheetBehavior) {
@@ -166,7 +179,10 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         store.state
             .mapNotNull { it.editableTimeEntry }
             .distinctUntilChanged { old, new -> old.ids == new.ids }
-            .onEach { scheduleTimeEntryIndicatorUpdate(it) }
+            .onEach {
+                scheduleTimeEntryIndicatorUpdate(it)
+                handleStartStopElementsState(it)
+            }
             .launchIn(lifecycleScope)
 
         lifecycleScope.launchWhenStarted {
@@ -287,6 +303,43 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             while (true) {
                 time_indicator.setDurationIfDifferent(editableTimeEntry.getDurationForDisplaying())
                 delay(elapsedTimeIndicatorUpdateDelayMs)
+            }
+        }
+    }
+
+    private fun handleStartStopElementsState(editableTimeEntry: EditableTimeEntry) {
+        with(editableTimeEntry) {
+
+            if (startTime == null && duration != null) {
+                allExtentedOptions.forEach { it.isVisible = false }
+                optionsAvailableForGroups.forEach { it.isVisible = true }
+                return
+            }
+
+            hideableStartViews.forEach { it.isVisible = startTime != null }
+            hideableStopViews.forEach { it.isVisible = duration != null }
+
+            when (startTime) {
+                null -> {
+                    start_time_label.text = getString(R.string.time_entry_not_started_yet)
+                    if (duration == null) {
+                        stop_time_label.text = getString(R.string.time_entry_not_started_yet)
+                        return
+                    }
+                }
+                else -> {
+                    start_time_label.text = startTime.formatForDisplayingTime()
+                    start_date_label.text = startTime.formatForDisplayingDate()
+                }
+            }
+
+            when (duration) {
+                null -> stop_time_label.text = getString(R.string.stop_timer)
+                else -> {
+                    val endTime = startTime!!.plus(duration)
+                    stop_time_label.text = endTime.formatForDisplayingTime()
+                    stop_date_label.text = endTime.formatForDisplayingDate()
+                }
             }
         }
     }
