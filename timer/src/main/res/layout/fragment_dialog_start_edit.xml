@@ -83,7 +83,7 @@
                         style="@style/Widget.MaterialComponents.Chip.Action"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Add a Project"
+                        android:text="@string/add_project"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -93,7 +93,7 @@
                         style="@style/Widget.MaterialComponents.Chip.Action"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Add Tags"
+                        android:text="@string/add_tags"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -112,7 +112,7 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Billable"
+                android:text="@string/billable"
                 app:chipIcon="@drawable/ic_billable"
                 app:chipIconVisible="true"
                 app:layout_constraintStart_toStartOf="parent"
@@ -138,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/edit_elements_margin"
                 android:drawableStart="@drawable/ic_play"
-                android:text="Start"
+                android:text="@string/start"
                 app:layout_constraintEnd_toStartOf="@+id/center_guideline"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/billable_divider" />
@@ -174,7 +174,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_stop"
-                android:text="Stop"
+                android:text="@string/end"
                 app:layout_constraintBaseline_toBaselineOf="@id/start_header"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/center_guideline"

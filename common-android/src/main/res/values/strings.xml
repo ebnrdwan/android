@@ -12,6 +12,11 @@
     <string name="continue_this">Continue</string>
     <string name="delete">Delete</string>
     <string name="undo">Undo</string>
+    <string name="add_project">Add a project</string>
+    <string name="add_tags">Add tags</string>
+    <string name="billable">Billable</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
     <string name="private_project">Private project</string>
     <string name="add_client">Add client</string>
     <string name="new_project">New project</string>
