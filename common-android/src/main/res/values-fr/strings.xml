@@ -13,6 +13,10 @@
     <string name="continue_this">Continuer</string>
     <string name="delete">Effacer</string>
     <string name="undo">Annuler</string>
+    <string name="add_tags">Ajoutez les labels</string>
+    <string name="billable">Facturable</string>
+    <string name="start">Début</string>
+    <string name="stop_timer">Stop timer</string>
     <plurals name="entriesDeleted">
         <item quantity="one" tools:ignore="ImpliedQuantity">L\'entrée de temps est supprimé</item>
         <item quantity="other">%d entrées de temps supprimées</item>

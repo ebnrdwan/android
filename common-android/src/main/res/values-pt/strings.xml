@@ -13,6 +13,11 @@
     <string name="continue_this">Continuar</string>
     <string name="delete">Excluir</string>
     <string name="undo">Desfazer</string>
+    <string name="add_project">Add a project</string>
+    <string name="add_tags">Adicionar tags</string>
+    <string name="billable">Faturável</string>
+    <string name="start">Iniciar</string>
+    <string name="stop_timer">Stop timer</string>
     <plurals name="entriesDeleted">
         <item quantity="one" tools:ignore="ImpliedQuantity">Registro de tempo removido</item>
         <item quantity="other">%d registros de tempos removidos</item>

@@ -13,6 +13,10 @@
     <string name="continue_this">続ける</string>
     <string name="delete">削除</string>
     <string name="undo">戻す</string>
+    <string name="add_tags">タグを追加</string>
+    <string name="billable">請求可能</string>
+    <string name="start">開始</string>
+    <string name="stop_timer">Stop timer</string>
     <plurals name="entriesDeleted" tools:ignore="UnusedQuantity">
         <item quantity="other">%d個の記録が削除されました</item>
     </plurals>
