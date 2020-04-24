@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WheelBackgroundView">
+        <attr name="arcWidth" format="dimension" />
+        <attr name="capWidth" format="dimension" />
+        <attr name="wheelColor" format="color" />
+        <attr name="textColor" format="color" />
+        <attr name="textSize" format="dimension" />
+        <attr name="extraTextDistanceFromArc" format="dimension" />
+    </declare-styleable>
+</resources>
