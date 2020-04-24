@@ -66,7 +66,6 @@
                     tools:ignore="Autofill" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
             <HorizontalScrollView
                 android:id="@+id/chip_group_scroll_view"
                 android:layout_width="match_parent"
@@ -126,6 +125,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/billable_action" />
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/center_guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
             <TextView
                 android:id="@+id/start_header"
                 android:layout_width="wrap_content"
@@ -133,10 +139,35 @@
                 android:layout_marginTop="@dimen/edit_elements_margin"
                 android:drawableStart="@drawable/ic_play"
                 android:text="Start"
-                app:layout_constraintEnd_toStartOf="@+id/stop_header"
-                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintEnd_toStartOf="@+id/center_guideline"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/billable_divider" />
+
+            <TextView
+                android:id="@+id/start_time_label"
+                style="@style/ClickableTextPrimary"
+                android:text="12:00 PM"
+                app:layout_constraintEnd_toStartOf="@id/start_divider"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/start_header" />
+
+            <View
+                android:id="@+id/start_divider"
+                style="@style/CircleDivider"
+                app:layout_constraintBottom_toBottomOf="@id/start_time_label"
+                app:layout_constraintEnd_toStartOf="@id/start_date_label"
+                app:layout_constraintStart_toEndOf="@id/start_time_label"
+                app:layout_constraintTop_toTopOf="@id/start_time_label" />
+
+            <TextView
+                android:id="@+id/start_date_label"
+                style="@style/ClickableTextSecondary"
+                android:text="02/22"
+                app:layout_constraintBottom_toBottomOf="@id/start_time_label"
+                app:layout_constraintEnd_toStartOf="@id/center_guideline"
+                app:layout_constraintStart_toEndOf="@id/start_divider"
+                app:layout_constraintTop_toTopOf="@id/start_time_label" />
 
             <TextView
                 android:id="@+id/stop_header"
@@ -146,58 +177,35 @@
                 android:text="Stop"
                 app:layout_constraintBaseline_toBaselineOf="@id/start_header"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/start_header"
+                app:layout_constraintStart_toEndOf="@id/center_guideline"
                 app:layout_constraintTop_toBottomOf="@id/billable_divider" />
 
-            <LinearLayout
-                android:id="@+id/start_data_holder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="@id/start_header"
-                app:layout_constraintStart_toStartOf="@id/start_header"
-                app:layout_constraintTop_toBottomOf="@id/start_header">
 
-                <TextView
-                    android:id="@+id/start_time_label"
-                    style="@style/ClickableTextPrimary"
-                    android:text="12:00 PM" />
+            <TextView
+                android:id="@+id/stop_time_label"
+                style="@style/ClickableTextPrimary"
+                android:text="Stop timer"
+                app:layout_constraintEnd_toStartOf="@id/stop_divider"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@id/center_guideline"
+                app:layout_constraintTop_toBottomOf="@id/stop_header" />
 
-                <View
-                    android:id="@+id/start_divider"
-                    style="@style/CircleDivider" />
+            <View
+                android:id="@+id/stop_divider"
+                style="@style/CircleDivider"
+                app:layout_constraintBottom_toBottomOf="@id/stop_time_label"
+                app:layout_constraintEnd_toStartOf="@id/stop_date_label"
+                app:layout_constraintStart_toEndOf="@id/stop_time_label"
+                app:layout_constraintTop_toTopOf="@id/stop_time_label" />
 
-                <TextView
-                    android:id="@+id/start_date_label"
-                    style="@style/ClickableTextSecondary"
-                    android:text="02/22" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/stop_data_holder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="@id/stop_header"
-                app:layout_constraintStart_toStartOf="@id/stop_header"
-                app:layout_constraintTop_toBottomOf="@id/stop_header">
-
-                <TextView
-                    android:id="@+id/stop_time_label"
-                    style="@style/ClickableTextPrimary"
-                    android:text="Stop timer" />
-
-                <View
-                    android:id="@+id/stop_divider"
-                    style="@style/CircleDivider" />
-
-                <TextView
-                    android:id="@+id/stop_date_label"
-                    style="@style/ClickableTextSecondary"
-                    android:text="02/22" />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/stop_date_label"
+                style="@style/ClickableTextSecondary"
+                android:text="02/22"
+                app:layout_constraintBottom_toBottomOf="@id/stop_time_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/stop_divider"
+                app:layout_constraintTop_toTopOf="@id/stop_time_label" />
 
             <View
                 android:id="@+id/wheel_placeholder"
@@ -207,14 +215,14 @@
                 android:background="@color/button_active"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/start_data_holder" />
+                app:layout_constraintTop_toBottomOf="@id/start_time_label" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/extended_options"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="billable_action,billable_divider,start_header,start_data_holder,stop_header,stop_data_holder,wheel_placeholder"
+                app:constraint_referenced_ids="billable_action,billable_divider,start_header,start_time_label,start_divider,start_date_label,stop_header,stop_time_label,stop_divider,stop_date_label,wheel_placeholder"
                 app:layout_constraintStart_toEndOf="parent"
                 tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
