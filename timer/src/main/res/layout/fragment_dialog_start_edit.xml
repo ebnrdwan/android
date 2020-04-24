@@ -134,10 +134,9 @@
 
             <TextView
                 android:id="@+id/start_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/StartEditHeaderText"
                 android:layout_marginTop="@dimen/edit_elements_margin"
-                android:drawableStart="@drawable/ic_play"
+                android:drawableStart="@drawable/ic_play_small"
                 android:text="@string/start"
                 app:layout_constraintEnd_toStartOf="@+id/center_guideline"
                 app:layout_constraintStart_toStartOf="parent"
@@ -171,9 +170,8 @@
 
             <TextView
                 android:id="@+id/stop_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_stop"
+                style="@style/StartEditHeaderText"
+                android:drawableStart="@drawable/ic_stop_small"
                 android:text="@string/end"
                 app:layout_constraintBaseline_toBaselineOf="@id/start_header"
                 app:layout_constraintEnd_toEndOf="parent"
