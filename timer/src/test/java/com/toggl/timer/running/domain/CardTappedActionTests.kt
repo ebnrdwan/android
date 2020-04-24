@@ -29,7 +29,6 @@ class CardTappedActionTests : CoroutineTest() {
     private val reducer = RunningTimeEntryReducer(repository, dispatcherProvider, timeService)
     private val editableTimeEntry = EditableTimeEntry.fromSingle(createTimeEntry(1, description = "Test"))
 
-
     @Test
     fun `should init editableTimeEntry with an empty id list when no TE is running`() = runBlockingTest {
         val initialState = createInitialState(editableTimeEntry = editableTimeEntry)
