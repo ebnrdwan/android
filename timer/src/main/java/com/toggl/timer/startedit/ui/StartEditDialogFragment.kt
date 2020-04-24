@@ -79,8 +79,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private lateinit var bottomControlPanelAnimator: BottomControlPanelAnimator
     private lateinit var hideableStartViews: List<View>
     private lateinit var hideableStopViews: List<View>
-    private lateinit var allExtentedOptions: List<View>
-    private lateinit var optionsAvailableForGroups: List<View>
+    private lateinit var extentedTimeOptions: List<View>
+    private lateinit var billableOptions: List<View>
 
     override fun onAttach(context: Context) {
         (requireActivity().applicationContext as TimerComponentProvider)
@@ -108,7 +108,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         return (super.onCreateDialog(savedInstanceState) as BottomSheetDialog).also { bottomSheetDialog: BottomSheetDialog ->
             store.state
                 .filter { it.editableTimeEntry != null }
-                .map { BottomControlPanelParams.fromState(it) }
+                .map { BottomControlPanelParams(it.editableTimeEntry!!, it.isEditableInProWorkspace()) }
                 .take(1)
                 .onEach {
                     bottomSheetDialog.setOnShowListener { dialogInterface ->
@@ -126,7 +126,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
         hideableStartViews = listOf(start_divider, start_date_label)
         hideableStopViews = listOf(stop_divider, stop_date_label)
-        allExtentedOptions = listOf(
+        extentedTimeOptions = listOf(
             start_header,
             start_time_label,
             start_divider,
@@ -135,13 +135,13 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             stop_time_label,
             stop_divider,
             stop_date_label,
-            billable_chip,
-            billable_divider,
             wheel_placeholder
         )
-        optionsAvailableForGroups = listOf(billable_chip, billable_divider)
+        billableOptions = listOf(billable_chip, billable_divider)
 
-        allExtentedOptions
+        extentedTimeOptions
+            .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
+        billableOptions
             .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
 
         val bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
@@ -183,6 +183,12 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 scheduleTimeEntryIndicatorUpdate(it)
                 handleStartStopElementsState(it)
             }
+            .launchIn(lifecycleScope)
+
+        store.state
+            .map { it.isEditableInProWorkspace() }
+            .distinctUntilChanged()
+            .onEach { shouldBillableOptionsShow -> billableOptions.forEach { it.isVisible = shouldBillableOptionsShow }}
             .launchIn(lifecycleScope)
 
         lifecycleScope.launchWhenStarted {
@@ -272,16 +278,11 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         bottomControlPanelAnimator.animateColorFilter(billableButton, isBillable)
     }
 
-    private data class BottomControlPanelParams(val editableTimeEntry: EditableTimeEntry, val isProWorkspace: Boolean) {
-        companion object {
-            private fun Workspace.isPro() = this.features.indexOf(WorkspaceFeature.Pro) != -1
-
-            fun fromState(startEditState: StartEditState) = BottomControlPanelParams(
-                startEditState.editableTimeEntry!!,
-                startEditState.workspaces[startEditState.editableTimeEntry.workspaceId]?.isPro() ?: false
-            )
-        }
-    }
+    private data class BottomControlPanelParams(val editableTimeEntry: EditableTimeEntry, val isProWorkspace: Boolean)
+    private fun Workspace.isPro() = this.features.indexOf(WorkspaceFeature.Pro) != -1
+    private fun StartEditState.isEditableInProWorkspace() = this.editableTimeEntry?.workspaceId?.run {
+        this@isEditableInProWorkspace.workspaces[this]?.isPro()
+    } ?: false
 
     private fun TextView.setDurationIfDifferent(duration: Duration) {
         val newDurationText = duration.formatForDisplaying()
@@ -311,8 +312,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         with(editableTimeEntry) {
 
             if (startTime == null && duration != null) {
-                allExtentedOptions.forEach { it.isVisible = false }
-                optionsAvailableForGroups.forEach { it.isVisible = true }
+                extentedTimeOptions.forEach { it.isVisible = false }
+
                 return
             }
 
