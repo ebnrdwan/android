@@ -107,7 +107,10 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bottomSheetCallback.addOnSlideAction(AlphaSlideAction(extended_options, false))
+        extended_options.referencedIds
+            .map { view.findViewById<View>(it) }
+            .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
+
         bottomSheetCallback.addOnStateChangedAction(object : OnStateChangedAction {
             override fun onStateChanged(sheet: View, newState: Int) {
                 extended_options.isInvisible =
