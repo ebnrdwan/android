@@ -192,11 +192,11 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         store.state
             .map { it.isEditableInProWorkspace() }
             .distinctUntilChanged()
-            .onEach { shouldBillableOptionsShow -> billableOptions.forEach { it.isVisible = shouldBillableOptionsShow }}
+            .onEach { shouldBillableOptionsShow -> billableOptions.forEach { it.isVisible = shouldBillableOptionsShow } }
             .launchIn(lifecycleScope)
 
         store.state
-            .map { it.editableTimeEntry?.billable ?: false}
+            .map { it.editableTimeEntry?.billable ?: false }
             .distinctUntilChanged()
             .onEach { billable_chip.isChecked = it }
             .launchIn(lifecycleScope)
