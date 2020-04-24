@@ -144,6 +144,10 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         billableOptions
             .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
 
+        billable_chip.setOnClickListener {
+            store.dispatch(StartEditAction.BillableTapped)
+        }
+
         val bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
         with(bottomSheetBehavior) {
             addBottomSheetCallback(bottomSheetCallback)
@@ -189,6 +193,12 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .map { it.isEditableInProWorkspace() }
             .distinctUntilChanged()
             .onEach { shouldBillableOptionsShow -> billableOptions.forEach { it.isVisible = shouldBillableOptionsShow }}
+            .launchIn(lifecycleScope)
+
+        store.state
+            .map { it.editableTimeEntry?.billable ?: false}
+            .distinctUntilChanged()
+            .onEach { billable_chip.isChecked = it }
             .launchIn(lifecycleScope)
 
         lifecycleScope.launchWhenStarted {
