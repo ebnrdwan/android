@@ -44,7 +44,7 @@ internal class TagButtonTappedActionTests {
 
     @Test
     fun `should append # to description and return no effects`() = runBlockingTest {
-        val editableWithDescription = EditableTimeEntry(listOf(), 1, "asdf", false, null)
+        val editableWithDescription = EditableTimeEntry(listOf(), 1, "asdf", null, null, false, null)
 
         reducer.testReduce(initialState.copy(editableTimeEntry = editableWithDescription), StartEditAction.TagButtonTapped) { state, effects ->
             state.editableTimeEntry!!.description shouldBe editableWithDescription.description + " #"
