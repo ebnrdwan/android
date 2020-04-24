@@ -77,7 +77,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private val bottomSheetCallback = BottomSheetCallback()
 
     private lateinit var bottomControlPanelAnimator: BottomControlPanelAnimator
-    private lateinit var hideableStartViews: List<View>
     private lateinit var hideableStopViews: List<View>
     private lateinit var extentedTimeOptions: List<View>
     private lateinit var billableOptions: List<View>
@@ -124,7 +123,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideableStartViews = listOf(start_divider, start_date_label)
         hideableStopViews = listOf(stop_divider, stop_date_label)
         extentedTimeOptions = listOf(
             start_header,
