@@ -2,32 +2,40 @@ package com.toggl.timer.common.domain
 
 import arrow.optics.optics
 import com.toggl.models.domain.TimeEntry
+import com.toggl.timer.exceptions.TimeEntryDoesNotExistException
+import org.threeten.bp.Duration
+import org.threeten.bp.OffsetDateTime
 
 @optics
 data class EditableTimeEntry(
-    val ids: List<Long>,
+    val ids: List<Long> = listOf(),
     val workspaceId: Long,
-    val description: String,
-    val billable: Boolean,
-    val editableProject: EditableProject?
+    val description: String = "",
+    val startTime: OffsetDateTime? = null,
+    val duration: Duration? = null,
+    val billable: Boolean = false,
+    val editableProject: EditableProject? = null
 ) {
     companion object {
-        fun empty(workspaceId: Long) = EditableTimeEntry(listOf(), workspaceId, "", false, null)
+        fun empty(workspaceId: Long) = EditableTimeEntry(workspaceId = workspaceId)
 
         fun fromSingle(timeEntry: TimeEntry) =
             EditableTimeEntry(
                 ids = listOf(timeEntry.id),
                 workspaceId = timeEntry.workspaceId,
                 description = timeEntry.description,
+                startTime = timeEntry.startTime,
+                duration = timeEntry.duration,
                 billable = timeEntry.billable,
                 editableProject = null
             )
 
-        fun fromGroup(ids: List<Long>, groupSample: TimeEntry) =
+        fun fromGroup(ids: List<Long>, groupSample: TimeEntry, timeEntries: Map<Long, TimeEntry>) =
             EditableTimeEntry(
                 ids = ids,
                 workspaceId = groupSample.workspaceId,
                 description = groupSample.description,
+                duration = ids.map { timeEntries[it] }.fold(Duration.ZERO) { totalTime, timeEntry -> totalTime + (timeEntry ?: throw TimeEntryDoesNotExistException()).duration },
                 billable = groupSample.billable,
                 editableProject = null
             )

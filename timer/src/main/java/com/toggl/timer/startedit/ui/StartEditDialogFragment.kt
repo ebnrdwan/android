@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -26,22 +27,28 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.toggl.common.Constants.elapsedTimeIndicatorUpdateDelayMs
 import com.toggl.common.doSafeAfterTextChanged
 import com.toggl.common.performClickHapticFeedback
 import com.toggl.common.setSafeText
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
 import com.toggl.common.sheet.OnStateChangedAction
+import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.timer.R
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.di.TimerComponentProvider
+import com.toggl.timer.extensions.formatForDisplaying
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditState
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
 import kotlinx.android.synthetic.main.fragment_dialog_start_edit.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNot
@@ -50,6 +57,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
+import org.threeten.bp.Duration
 import javax.inject.Inject
 import com.toggl.common.R as CommonR
 
@@ -58,9 +66,13 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var timeService: TimeService
+
     private val store: StartEditStoreViewModel by viewModels { viewModelFactory }
 
     private var descriptionChangeListener: TextWatcher? = null
+    private var timeIndicatorScheduledUpdate: Job? = null
 
     private val bottomSheetCallback = BottomSheetCallback()
 
@@ -103,6 +115,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
+    @kotlinx.coroutines.FlowPreview
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -151,14 +164,22 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .launchIn(lifecycleScope)
 
         store.state
-            .filter { it.editableTimeEntry == null }
-            .distinctUntilChanged()
-            .onEach {
-                if (isVisible) {
-                    findNavController().popBackStack()
-                }
-            }
+            .mapNotNull { it.editableTimeEntry }
+            .distinctUntilChanged { old, new -> old.ids == new.ids }
+            .onEach { scheduleTimeEntryIndicatorUpdate(it) }
             .launchIn(lifecycleScope)
+
+        lifecycleScope.launchWhenStarted {
+            store.state
+                .filter { it.editableTimeEntry == null }
+                .distinctUntilChanged()
+                .onEach {
+                    if (dialog?.isShowing == true) {
+                        findNavController().popBackStack()
+                    }
+                }
+                .collect()
+        }
     }
 
     override fun onDestroyView() {
@@ -243,6 +264,30 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 startEditState.editableTimeEntry!!,
                 startEditState.workspaces[startEditState.editableTimeEntry.workspaceId]?.isPro() ?: false
             )
+        }
+    }
+
+    private fun TextView.setDurationIfDifferent(duration: Duration) {
+        val newDurationText = duration.formatForDisplaying()
+        if (this.text != newDurationText) {
+            this.text = newDurationText
+        }
+    }
+
+    private fun EditableTimeEntry.getDurationForDisplaying() =
+        when {
+            this.startTime == null -> Duration.ZERO
+            this.duration == null -> Duration.between(this.startTime, timeService.now())
+            else -> this.duration
+        }
+
+    private fun scheduleTimeEntryIndicatorUpdate(editableTimeEntry: EditableTimeEntry) {
+        timeIndicatorScheduledUpdate?.cancel()
+        timeIndicatorScheduledUpdate = lifecycleScope.launchWhenCreated {
+            while (true) {
+                time_indicator.setDurationIfDifferent(editableTimeEntry.getDurationForDisplaying())
+                delay(elapsedTimeIndicatorUpdateDelayMs)
+            }
         }
     }
 }

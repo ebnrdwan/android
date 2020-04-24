@@ -20,8 +20,8 @@ import kotlinx.coroutines.test.runBlockingTest
 class TimeEntryGroupSwipedActionTests : FreeCoroutineSpec() {
     init {
         val repository = mockk<TimeEntryRepository>()
-        val entryInDatabase = createTimeEntry(1, "test")
-        val entryToBeStarted = createTimeEntry(2, "test")
+        val entriesInDatabase = listOf(createTimeEntry(1, "test"), createTimeEntry(2, "test"))
+        val entryToBeStarted = createTimeEntry(3, "test")
         coEvery { repository.startTimeEntry(1, "test") } returns StartTimeEntryResult(
             entryToBeStarted,
             null
@@ -32,7 +32,7 @@ class TimeEntryGroupSwipedActionTests : FreeCoroutineSpec() {
 
             "when swiping right" - {
                 "should continue the swiped time entries" {
-                    val initialState = createInitialState(listOf(entryInDatabase))
+                    val initialState = createInitialState(entriesInDatabase)
                     var state = initialState
                     val mutableValue = state.toMutableValue { state = it }
                     val action = TimeEntriesLogAction.TimeEntryGroupSwiped(listOf(1, 2), SwipeDirection.Right)
@@ -43,7 +43,7 @@ class TimeEntryGroupSwipedActionTests : FreeCoroutineSpec() {
                 }
 
                 "should throw when there are no matching TEs" {
-                    val initialState = createInitialState(listOf(entryInDatabase))
+                    val initialState = createInitialState(entriesInDatabase)
                     var state = initialState
                     val mutableValue = state.toMutableValue { state = it }
                     val action = TimeEntriesLogAction.TimeEntryGroupSwiped(listOf(2, 3), SwipeDirection.Right)
