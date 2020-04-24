@@ -35,6 +35,7 @@ class CardTappedActionTests : CoroutineTest() {
             action = RunningTimeEntryAction.CardTapped
         ) { state, _ ->
             state.editableTimeEntry.shouldNotBeNull()
+            state.editableTimeEntry!!.startTime.shouldNotBeNull()
             state.editableTimeEntry!!.ids shouldBe emptyList()
         }
     }

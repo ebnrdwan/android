@@ -17,7 +17,7 @@
     <string name="billable">Billable</string>
     <string name="start">Start</string>
     <string name="end">End</string>
-    <string name="time_entry_not_started_yet">Time entry not started yet</string>
+    <string name="set_stop_time">Set a stop time</string>
     <string name="stop_timer">Stop timer</string>
     <string name="private_project">Private project</string>
     <string name="add_client">Add client</string>

@@ -182,7 +182,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
         store.state
             .mapNotNull { it.editableTimeEntry }
-            .distinctUntilChanged { old, new -> old.ids == new.ids }
+            .distinctUntilChanged { old, new -> old.ids == new.ids && old.startTime == new.startTime }
             .onEach {
                 scheduleTimeEntryIndicatorUpdate(it)
                 handleStartStopElementsState(it)
@@ -289,6 +289,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     }
 
     private data class BottomControlPanelParams(val editableTimeEntry: EditableTimeEntry, val isProWorkspace: Boolean)
+
     private fun Workspace.isPro() = this.features.indexOf(WorkspaceFeature.Pro) != -1
     private fun StartEditState.isEditableInProWorkspace() = this.editableTimeEntry?.workspaceId?.run {
         this@isEditableInProWorkspace.workspaces[this]?.isPro()
@@ -322,32 +323,24 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         with(editableTimeEntry) {
 
             if (startTime == null && duration != null) {
+                // we are handling a group
                 extentedTimeOptions.forEach { it.isVisible = false }
-
                 return
             }
 
-            hideableStartViews.forEach { it.isVisible = startTime != null }
+            val startTime = startTime ?: throw IllegalStateException("Start time can be null only for groups")
+            val isUnstartedTimeEntry = ids.isEmpty()
+
             hideableStopViews.forEach { it.isVisible = duration != null }
 
-            when (startTime) {
-                null -> {
-                    start_time_label.text = getString(R.string.time_entry_not_started_yet)
-                    if (duration == null) {
-                        stop_time_label.text = getString(R.string.time_entry_not_started_yet)
-                        return
-                    }
-                }
-                else -> {
-                    start_time_label.text = startTime.formatForDisplayingTime()
-                    start_date_label.text = startTime.formatForDisplayingDate()
-                }
-            }
+            start_time_label.text = startTime.formatForDisplayingTime()
+            start_date_label.text = startTime.formatForDisplayingDate()
 
             when (duration) {
-                null -> stop_time_label.text = getString(R.string.stop_timer)
+                null -> stop_time_label.text =
+                    if (isUnstartedTimeEntry) getString(R.string.set_stop_time) else getString(R.string.stop_timer)
                 else -> {
-                    val endTime = startTime!!.plus(duration)
+                    val endTime = startTime.plus(duration)
                     stop_time_label.text = endTime.formatForDisplayingTime()
                     stop_date_label.text = endTime.formatForDisplayingDate()
                 }

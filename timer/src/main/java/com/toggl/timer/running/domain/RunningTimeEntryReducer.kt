@@ -6,6 +6,7 @@ import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.extensions.effect
+import com.toggl.environment.services.time.TimeService
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.StartTimeEntryEffect
@@ -20,6 +21,9 @@ class RunningTimeEntryReducer @Inject constructor(
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<RunningTimeEntryState, RunningTimeEntryAction> {
 
+    @Inject
+    lateinit var timeService: TimeService
+
     override fun reduce(
         state: MutableValue<RunningTimeEntryState>,
         action: RunningTimeEntryAction
@@ -31,7 +35,7 @@ class RunningTimeEntryReducer @Inject constructor(
                 state.mutateWithoutEffects {
                     val entryToOpen = timeEntries.runningTimeEntryOrNull()
                         ?.run(EditableTimeEntry.Companion::fromSingle)
-                        ?: EditableTimeEntry.empty(defaultWorkspaceId())
+                        ?: EditableTimeEntry.withStartTime(defaultWorkspaceId(), timeService.now())
 
                     copy(editableTimeEntry = entryToOpen)
                 }
