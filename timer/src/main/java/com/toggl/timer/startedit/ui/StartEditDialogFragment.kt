@@ -273,7 +273,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
     private fun EditableTimeEntry.getDurationForDisplaying() =
         when {
-            this.startTime == null -> Duration.ZERO
+            this.startTime == null || this.ids.isEmpty() -> Duration.ZERO
             this.duration == null -> Duration.between(this.startTime, timeService.now())
             else -> this.duration
         }
