@@ -30,7 +30,7 @@ class TimeEntryUpdatedActionTests : FreeCoroutineSpec() {
             timeEntries = timeEntries
         )
         val updated = timeEntries[2L]!!.copy(description = "second updated")
-        val reducer = RunningTimeEntryReducer(repository, dispatcherProvider)
+        val reducer = RunningTimeEntryReducer(repository, dispatcherProvider, mockk())
         coEvery { workspace.id } returns 1
 
         "The TimeEntryUpdated action" - {

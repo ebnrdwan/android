@@ -18,11 +18,9 @@ import javax.inject.Inject
 
 class RunningTimeEntryReducer @Inject constructor(
     private val repository: TimeEntryRepository,
-    private val dispatcherProvider: DispatcherProvider
+    private val dispatcherProvider: DispatcherProvider,
+    private val timeService: TimeService
 ) : Reducer<RunningTimeEntryState, RunningTimeEntryAction> {
-
-    @Inject
-    lateinit var timeService: TimeService
 
     override fun reduce(
         state: MutableValue<RunningTimeEntryState>,

@@ -32,7 +32,7 @@ class TimeEntryStartedActionTests : FreeCoroutineSpec() {
         )
         val started = createTimeEntry(3, "started", duration = null)
         val stopped = timeEntries[2L]!!.copy(duration = Duration.ofHours(2))
-        val reducer = RunningTimeEntryReducer(repository, dispatcherProvider)
+        val reducer = RunningTimeEntryReducer(repository, dispatcherProvider, mockk())
 
         "The TimeEntryStarted action" - {
             "with stopped entry" - {

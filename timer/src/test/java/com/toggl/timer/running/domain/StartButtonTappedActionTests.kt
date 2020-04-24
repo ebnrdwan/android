@@ -16,7 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class StartButtonTappedActionTests : FreeCoroutineSpec() {
     init {
         val repository = mockk<TimeEntryRepository>()
-        val reducer = RunningTimeEntryReducer(repository, dispatcherProvider)
+        val reducer = RunningTimeEntryReducer(repository, dispatcherProvider, mockk())
         val editableTimeEntry =
             EditableTimeEntry.fromSingle(createTimeEntry(1, description = "Test"))
         val initialState = createInitialState(editableTimeEntry = editableTimeEntry)
