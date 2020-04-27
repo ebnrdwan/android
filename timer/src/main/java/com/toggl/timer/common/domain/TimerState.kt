@@ -7,6 +7,7 @@ import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
+import com.toggl.timer.startedit.domain.DateTimePickMode
 
 @optics
 data class TimerState(
@@ -20,13 +21,15 @@ data class TimerState(
         internal val editableTimeEntry: EditableTimeEntry?,
         internal val expandedGroupIds: Set<Long>,
         internal val entriesPendingDeletion: Set<Long>,
-        internal val autocompleteSuggestions: List<AutocompleteSuggestion>
+        internal val autocompleteSuggestions: List<AutocompleteSuggestion>,
+        internal val dateTimePickMode: DateTimePickMode
     ) {
         constructor() : this(
             editableTimeEntry = null,
             expandedGroupIds = setOf(),
             entriesPendingDeletion = setOf(),
-            autocompleteSuggestions = emptyList()
+            autocompleteSuggestions = emptyList(),
+            dateTimePickMode = DateTimePickMode.None
         )
 
         companion object {

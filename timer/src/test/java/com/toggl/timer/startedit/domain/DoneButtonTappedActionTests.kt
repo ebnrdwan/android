@@ -27,7 +27,7 @@ class DoneButtonTappedActionTests : FreeCoroutineSpec() {
     private val workspace = mockk<Workspace>()
     private val editableTimeEntry =
         EditableTimeEntry.fromSingle(createTimeEntry(1, description = "Test"))
-    private val state = StartEditState(mapOf(1L to timeEntry, 2L to timeEntry2), mapOf(1L to workspace), editableTimeEntry, listOf())
+    private val state = StartEditState(mapOf(1L to timeEntry, 2L to timeEntry2), mapOf(1L to workspace), editableTimeEntry, listOf(), DateTimePickMode.None)
     private val reducer = StartEditReducer(repository, dispatcherProvider)
 
     init {
