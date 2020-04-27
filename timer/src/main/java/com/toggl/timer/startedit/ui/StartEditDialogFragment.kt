@@ -27,6 +27,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.toggl.common.Constants.elapsedTimeIndicatorUpdateDelayMs
+import com.toggl.common.addInterceptingOnClickListener
 import com.toggl.common.doSafeAfterTextChanged
 import com.toggl.common.performClickHapticFeedback
 import com.toggl.common.setSafeText
@@ -142,7 +143,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         billableOptions
             .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
 
-        billable_chip.setOnClickListener {
+        billable_chip.addInterceptingOnClickListener {
             store.dispatch(StartEditAction.BillableTapped)
         }
 
@@ -238,7 +239,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
         val billableButton = bottomControlPanel.findViewById<ImageView>(R.id.billable_action)
         billableButton.isVisible = bottomControlPanelParams.isProWorkspace
-        billableButton.setOnClickListener {
+        billableButton.addInterceptingOnClickListener {
             store.dispatch(StartEditAction.BillableTapped)
         }
 
