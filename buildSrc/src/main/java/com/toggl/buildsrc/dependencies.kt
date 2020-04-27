@@ -14,12 +14,15 @@ object Libs {
     const val threeTenAndroid = "com.jakewharton.threetenabp:threetenabp:1.2.2"
 
     object Test {
+        const val junit4 = "junit:junit:4.13"
+        const val robolectric = "org.robolectric:robolectric:4.3.1"
         const val junit5Plugin = "de.mannodermaus.gradle.plugins:android-junit5:1.5.0.0"
         const val kotlinTestRunner = "io.kotlintest:kotlintest-runner-junit5:3.4.2"
         const val kotlinTest = "org.jetbrains.kotlin:kotlin-test:1.3.71"
         const val kotlinCoroutineTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.4"
         const val kotlinTestJunit = "org.jetbrains.kotlin:kotlin-test-junit5:1.3.71"
         const val mockk = "io.mockk:mockk:1.9.3"
+        const val assertJ = "org.assertj:assertj-core:3.15.0"
 
         object Jupiter {
             private const val version = "5.6.1"
@@ -62,9 +65,9 @@ object Libs {
         const val fragment = "androidx.fragment:fragment:1.0.0"
 
         object Test {
-            const val core = "androidx.test:core:1.1.0"
-            const val runner = "androidx.test:runner:1.1.1"
-            const val rules = "androidx.test:rules:1.1.1"
+            const val core = "androidx.test:core:1.2.0"
+            const val runner = "androidx.test:runner:1.2.0"
+            const val rules = "androidx.test:rules:1.2.0"
             const val espressoCore = "androidx.test.espresso:espresso-core:3.1.1"
         }
 
@@ -85,6 +88,7 @@ object Libs {
             const val runtime = "androidx.room:room-runtime:$version"
             const val compiler = "androidx.room:room-compiler:$version"
             const val ktx = "androidx.room:room-ktx:$version"
+            const val testing = "androidx.room:room-testing:$version"
         }
 
         object Navigation {

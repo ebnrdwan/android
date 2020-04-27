@@ -13,7 +13,7 @@ import androidx.room.PrimaryKey
 )
 data class DatabaseTask(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val id: Long = 0,
     val name: String,
     val active: Boolean,
     val projectId: Long,

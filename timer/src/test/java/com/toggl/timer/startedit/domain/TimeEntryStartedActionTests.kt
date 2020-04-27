@@ -20,14 +20,18 @@ class TimeEntryStartedActionTests : FreeCoroutineSpec() {
         val repository = mockk<TimeEntryRepository>()
         val workspace = mockk<Workspace>()
         coEvery { workspace.id } returns 1
-        val timeEntries = mapOf(
-            1L to createTimeEntry(1, "first", duration = Duration.ofHours(1)),
-            2L to createTimeEntry(2, "second", duration = null)
+        val timeEntries = listOf(
+            createTimeEntry(1, "first", duration = Duration.ofHours(1)),
+            createTimeEntry(2, "second", duration = null)
         )
         val editableTimeEntry = EditableTimeEntry.empty(workspace.id)
-        val initState = StartEditState(timeEntries, mapOf(1L to workspace), editableTimeEntry, listOf(), DateTimePickMode.None)
+        val initState = createInitialState(
+            timeEntries = timeEntries,
+            workspaces = listOf(workspace),
+            editableTimeEntry = editableTimeEntry
+        )
         val started = createTimeEntry(3, "started", duration = null)
-        val stopped = timeEntries[2L]!!.copy(duration = Duration.ofHours(2))
+        val stopped = timeEntries[1].copy(duration = Duration.ofHours(2))
         val reducer = StartEditReducer(repository, dispatcherProvider)
 
         "The TimeEntryStarted action" - {

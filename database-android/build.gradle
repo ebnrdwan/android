@@ -21,6 +21,13 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":
+                                     "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -35,7 +42,33 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
+
+android.sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+    debug.java.srcDirs += 'src/debug/kotlin'
+    release.java.srcDirs += 'src/release/kotlin'
+    test.java.srcDirs += 'src/test/kotlin'
+
+    // For kapt stubs
+    main.java.srcDirs += [file("$buildDir/generated/source/kapt/main")]
+    debug.java.srcDirs += [file("$buildDir/generated/source/kapt/debug")]
+    release.java.srcDirs += [file("$buildDir/generated/source/kapt/release")]
+    test.java.srcDirs += [file("$buildDir/generated/source/kapt/test")]
+
+    // For kotlin code gen during kapt
+    main.java.srcDirs += [file("$buildDir/generated/source/kaptKotlin/main")]
+    debug.java.srcDirs += [file("$buildDir/generated/source/kaptKotlin/debug")]
+    release.java.srcDirs += [file("$buildDir/generated/source/kaptKotlin/release")]
+    test.java.srcDirs += [file("$buildDir/generated/source/kaptKotlin/test")]
+}
+
 
 dependencies {
     api project(':database')
@@ -46,4 +79,14 @@ dependencies {
     kapt Libs.AndroidX.Room.compiler
     implementation Libs.Dagger.dagger
     kapt Libs.Dagger.compiler
+
+    testImplementation Libs.Test.robolectric
+    testImplementation Libs.AndroidX.Test.core
+    testImplementation Libs.AndroidX.Test.runner
+    testImplementation Libs.AndroidX.Room.testing
+    testImplementation Libs.Test.kotlinTest
+    testImplementation Libs.slf4j
+    testImplementation Libs.Test.kotlinTestJunit
+    testImplementation Libs.Test.assertJ
+    kaptTest Libs.AndroidX.Room.compiler
 }
