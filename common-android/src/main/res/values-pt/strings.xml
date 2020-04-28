@@ -17,6 +17,7 @@
     <string name="billable">Faturável</string>
     <string name="start_time">Horário de início</string>
     <string name="end_time">Horário de termino</string>
+    <string name="stop">Parar</string>
     <plurals name="entriesDeleted">
         <item quantity="one" tools:ignore="ImpliedQuantity">Registro de tempo removido</item>
         <item quantity="other">%d registros de tempos removidos</item>
@@ -25,5 +26,4 @@
     <string name="add_client">Adicionar cliente</string>
     <string name="new_project">Novo Projeto</string>
     <string name="create">Criar</string>
-    <string name="stop">Parar</string>
 </resources>
