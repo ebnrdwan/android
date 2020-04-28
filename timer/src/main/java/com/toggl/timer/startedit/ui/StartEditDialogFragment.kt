@@ -288,29 +288,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         bottomControlPanelAnimator.animateColorFilter(billableButton, isBillable)
     }
 
-    private data class BottomControlPanelParams(val editableTimeEntry: EditableTimeEntry, val isProWorkspace: Boolean)
-
-    private fun Workspace.isPro() = this.features.indexOf(WorkspaceFeature.Pro) != -1
-    private fun StartEditState.isEditableInProWorkspace() = this.editableTimeEntry?.workspaceId?.run {
-        this@isEditableInProWorkspace.workspaces[this]?.isPro()
-    } ?: false
-
-    private fun TextView.setTextIfDifferent(newText: String) {
-        if (this.text != newText) {
-            this.text = newText
-        }
-    }
-
-    private fun EditableTimeEntry.isRepresentingGroup() = this.ids.size > 1
-    private fun EditableTimeEntry.isNotStarted() = this.ids.isEmpty()
-    private fun EditableTimeEntry.getDurationForDisplaying() =
-        when {
-            this.duration != null -> this.duration
-            this.isNotStarted() && this.startTime == null -> Duration.ZERO
-            this.startTime != null -> Duration.between(this.startTime, timeService.now())
-            else -> throw IllegalStateException("Editable time entry must either have a duration, a start time or not be started yet (have no ids)")
-        }
-
     private fun scheduleTimeEntryIndicatorAndLabelUpdate(editableTimeEntry: EditableTimeEntry) {
         timeIndicatorScheduledUpdate?.cancel()
         timeIndicatorScheduledUpdate = lifecycleScope.launchWhenCreated {
@@ -355,4 +332,26 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             }
         }
     }
+
+    private fun Workspace.isPro() = this.features.indexOf(WorkspaceFeature.Pro) != -1
+    private fun StartEditState.isEditableInProWorkspace() = this.editableTimeEntry?.workspaceId?.run {
+        this@isEditableInProWorkspace.workspaces[this]?.isPro()
+    } ?: false
+    private fun EditableTimeEntry.isRepresentingGroup() = this.ids.size > 1
+    private fun EditableTimeEntry.isNotStarted() = this.ids.isEmpty()
+    private fun EditableTimeEntry.getDurationForDisplaying() =
+        when {
+            this.duration != null -> this.duration
+            this.isNotStarted() && this.startTime == null -> Duration.ZERO
+            this.startTime != null -> Duration.between(this.startTime, timeService.now())
+            else -> throw IllegalStateException("Editable time entry must either have a duration, a start time or not be started yet (have no ids)")
+        }
+
+    private fun TextView.setTextIfDifferent(newText: String) {
+        if (this.text != newText) {
+            this.text = newText
+        }
+    }
+
+    private data class BottomControlPanelParams(val editableTimeEntry: EditableTimeEntry, val isProWorkspace: Boolean)
 }
