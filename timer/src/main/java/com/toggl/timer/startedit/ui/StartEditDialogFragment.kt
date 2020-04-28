@@ -306,7 +306,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private fun EditableTimeEntry.getDurationForDisplaying() =
         when {
             this.duration != null -> this.duration
-            this.ids.isEmpty() && this.startTime == null -> Duration.ZERO
+            this.isNotStarted() && this.startTime == null -> Duration.ZERO
             this.startTime != null -> Duration.between(this.startTime, timeService.now())
             else -> throw IllegalStateException("Editable time entry must either have a duration, a start time or not be started yet (have no ids)")
         }
