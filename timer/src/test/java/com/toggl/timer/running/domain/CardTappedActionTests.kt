@@ -33,14 +33,13 @@ class CardTappedActionTests : CoroutineTest() {
     fun `should init editableTimeEntry with an empty id list when no TE is running`() = runBlockingTest {
         val initialState = createInitialState(editableTimeEntry = editableTimeEntry)
         coEvery { workspace.id } returns 1
-        every { timeService.now() } returns OffsetDateTime.MAX
 
         reducer.testReduce(
             initialState = initialState,
             action = RunningTimeEntryAction.CardTapped
         ) { state, _ ->
             state.editableTimeEntry.shouldNotBeNull()
-            state.editableTimeEntry!!.startTime shouldBe OffsetDateTime.MAX
+            state.editableTimeEntry!!.startTime shouldBe null
             state.editableTimeEntry!!.ids shouldBe emptyList()
         }
     }
