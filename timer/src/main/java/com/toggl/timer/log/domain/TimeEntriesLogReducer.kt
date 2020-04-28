@@ -48,6 +48,7 @@ class TimeEntriesLogReducer @Inject constructor(
             is TimeEntriesLogAction.TimeEntryGroupTapped ->
                 state.mutateWithoutEffects {
                     val entryToEdit = EditableTimeEntry.fromGroup(state().getAllTimeEntriesWithIds(action.ids))
+
                     copy(editableTimeEntry = entryToEdit)
                 }
 
@@ -70,6 +71,7 @@ class TimeEntriesLogReducer @Inject constructor(
                         handleDeletingSwipe(state, action.ids)
                     SwipeDirection.Right -> {
                         val timeEntryToStart = EditableTimeEntry.fromGroup(state().getAllTimeEntriesWithIds(action.ids))
+
                         startTimeEntry(timeEntryToStart, repository)
                     }
                 }

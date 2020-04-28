@@ -34,6 +34,7 @@ class RunningTimeEntryReducer @Inject constructor(
                     val entryToOpen = timeEntries.runningTimeEntryOrNull()
                         ?.run(EditableTimeEntry.Companion::fromSingle)
                         ?: EditableTimeEntry.empty(defaultWorkspaceId())
+
                     copy(editableTimeEntry = entryToOpen)
                 }
             is RunningTimeEntryAction.TimeEntryUpdated ->
