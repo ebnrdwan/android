@@ -239,7 +239,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
         val billableButton = bottomControlPanel.findViewById<ImageView>(R.id.billable_action)
         billableButton.isVisible = bottomControlPanelParams.isProWorkspace
-        billableButton.addInterceptingOnClickListener {
+        billableButton.setOnClickListener {
             store.dispatch(StartEditAction.BillableTapped)
         }
 

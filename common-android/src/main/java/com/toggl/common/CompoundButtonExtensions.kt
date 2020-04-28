@@ -1,9 +1,9 @@
 package com.toggl.common
 
 import android.view.MotionEvent
-import android.view.View
+import android.widget.CompoundButton
 
-fun View.addInterceptingOnClickListener(action: () -> Unit) {
+fun CompoundButton.addInterceptingOnClickListener(action: () -> Unit) {
     this.setOnTouchListener { _, event ->
         if (event.action == MotionEvent.ACTION_UP) {
             action()
