@@ -2,7 +2,6 @@ package com.toggl.timer.common.domain
 
 import arrow.optics.optics
 import com.toggl.models.domain.TimeEntry
-import com.toggl.timer.exceptions.TimeEntryDoesNotExistException
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 
@@ -30,13 +29,13 @@ data class EditableTimeEntry(
                 editableProject = null
             )
 
-        fun fromGroup(ids: List<Long>, groupSample: TimeEntry, timeEntries: Map<Long, TimeEntry>) =
+        fun fromGroup(timeEntries: Collection<TimeEntry>) =
             EditableTimeEntry(
-                ids = ids,
-                workspaceId = groupSample.workspaceId,
-                description = groupSample.description,
-                duration = ids.map { timeEntries[it] }.fold(Duration.ZERO) { totalTime, timeEntry -> totalTime + (timeEntry ?: throw TimeEntryDoesNotExistException()).duration },
-                billable = groupSample.billable,
+                ids = timeEntries.map { it.id },
+                workspaceId = timeEntries.first().workspaceId,
+                description = timeEntries.first().description,
+                duration = timeEntries.fold(Duration.ZERO) { totalTime, timeEntry -> totalTime + timeEntry.duration },
+                billable = timeEntries.first().billable,
                 editableProject = null
             )
     }

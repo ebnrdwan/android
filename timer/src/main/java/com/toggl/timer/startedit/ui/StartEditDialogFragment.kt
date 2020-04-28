@@ -165,7 +165,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             }
             requestFocus()
             descriptionChangeListener = time_entry_description.doSafeAfterTextChanged {
-                val action = StartEditAction.DescriptionEntered(text.toString())
+                val action = StartEditAction.DescriptionEntered(text.toString(), this.selectionEnd)
                 store.dispatch(action)
             }
         }

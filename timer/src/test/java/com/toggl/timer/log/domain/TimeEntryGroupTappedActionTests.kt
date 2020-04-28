@@ -10,6 +10,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.threeten.bp.Duration
 
 @ExperimentalCoroutinesApi
 class TimeEntryGroupTappedActionTests : FreeCoroutineSpec() {
@@ -55,6 +56,7 @@ class TimeEntryGroupTappedActionTests : FreeCoroutineSpec() {
                 val idsToEdit = listOf(1L, 2L)
                 reducer.reduce(mutableValue, TimeEntriesLogAction.TimeEntryGroupTapped(idsToEdit))
                 state.editableTimeEntry!!.ids shouldBe idsToEdit
+                state.editableTimeEntry!!.duration shouldBe Duration.ofMinutes(4)
             }
         }
     }

@@ -7,6 +7,7 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.domain.EditableTimeEntry
@@ -30,12 +31,12 @@ class StartEditReducer @Inject constructor(
             StartEditAction.CloseButtonTapped, StartEditAction.DialogDismissed ->
                 state.mutateWithoutEffects { copy(editableTimeEntry = null) }
             is StartEditAction.DescriptionEntered ->
-                state.mutateWithoutEffects {
+                state.mutate {
                     editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                     StartEditState.editableTimeEntry.modify(this) {
                         it.copy(description = action.description)
                     }
-                }
+                } returnEffect updateAutocompleteSuggestions(action, state())
             is StartEditAction.TimeEntryUpdated ->
                 state.mutateWithoutEffects {
                     copy(
@@ -108,6 +109,23 @@ class StartEditReducer @Inject constructor(
         SaveTimeEntryEffect(repository, dispatcherProvider, timeEntry) { updatedTimeEntry ->
             StartEditAction.TimeEntryUpdated(updatedTimeEntry.id, updatedTimeEntry)
         }
+
+    private fun updateAutocompleteSuggestions(
+        action: StartEditAction.DescriptionEntered,
+        state: StartEditState
+    ): List<Effect<StartEditAction>> =
+        effect(
+            UpdateAutocompleteSuggestionsEffect(
+                dispatcherProvider,
+                action.description,
+                action.cursorPosition,
+                state.tags,
+                state.tasks,
+                state.clients,
+                state.projects,
+                state.timeEntries
+            )
+        )
 
     private fun EditableTimeEntry.shouldStart() = this.ids.isEmpty()
 }

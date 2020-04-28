@@ -18,11 +18,8 @@ internal class EditableTimeEntryTests {
             createTimeEntry(3)
         )
 
-        val editable = EditableTimeEntry.fromGroup(
-            listOf(1, 2),
-            timeEntries[0],
-            timeEntries.associateBy { it.id }
-        )
+        val ids = listOf<Long>(1, 2)
+        val editable = EditableTimeEntry.fromGroup(timeEntries.filter { it.id in ids })
 
         editable.duration shouldBe Duration.ofMinutes(8)
         editable.startTime shouldBe null
@@ -37,5 +34,16 @@ internal class EditableTimeEntryTests {
 
         editable.duration shouldBe Duration.ofMinutes(3)
         editable.startTime shouldBe now
+    }
+
+    @Test
+    fun `for non-started TEs, initiates an empty editable`() {
+        val editable = EditableTimeEntry.empty(1)
+
+        editable.duration shouldBe null
+        editable.startTime shouldBe null
+        editable.ids shouldBe emptyList()
+        editable.description shouldBe ""
+        editable.editableProject shouldBe null
     }
 }
