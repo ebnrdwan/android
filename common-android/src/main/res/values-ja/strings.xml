@@ -24,4 +24,5 @@
     <string name="add_client">クライアントを追加</string>
     <string name="new_project">新しいプロジェクト</string>
     <string name="create">作成する</string>
+    <string name="stop">停止</string>
 </resources>

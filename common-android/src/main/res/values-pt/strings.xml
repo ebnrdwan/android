@@ -13,7 +13,6 @@
     <string name="continue_this">Continuar</string>
     <string name="delete">Excluir</string>
     <string name="undo">Desfazer</string>
-    <string name="add_project">Add a project</string>
     <string name="add_tags">Adicionar tags</string>
     <string name="billable">Faturável</string>
     <string name="start_time">Horário de início</string>
@@ -26,4 +25,5 @@
     <string name="add_client">Adicionar cliente</string>
     <string name="new_project">Novo Projeto</string>
     <string name="create">Criar</string>
+    <string name="stop">Parar</string>
 </resources>

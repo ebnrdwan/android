@@ -25,4 +25,5 @@
     <string name="add_client">Ajouter un client</string>
     <string name="new_project">Nouveau projet</string>
     <string name="create">Créer</string>
+    <string name="stop">Arrêter</string>
 </resources>

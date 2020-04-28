@@ -337,7 +337,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
             when (duration) {
                 null -> stop_time_label.text =
-                    if (isUnstartedTimeEntry) getString(R.string.set_stop_time) else getString(R.string.stop_timer)
+                    if (isUnstartedTimeEntry) getString(R.string.set_stop_time) else getString(R.string.stop)
                 else -> {
                     val endTime = startTime.plus(duration)
                     stop_time_label.text = endTime.formatForDisplayingTime()

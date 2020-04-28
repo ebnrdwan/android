@@ -18,7 +18,7 @@
     <string name="start_time">Start time</string>
     <string name="end_time">End time</string>
     <string name="set_stop_time">Set a stop time</string>
-    <string name="stop_timer">Stop timer</string>
+    <string name="stop">Stop</string>
     <string name="private_project">Private project</string>
     <string name="add_client">Add client</string>
     <string name="new_project">New project</string>
