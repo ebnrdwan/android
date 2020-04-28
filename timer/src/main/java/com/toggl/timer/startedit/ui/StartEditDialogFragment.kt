@@ -59,6 +59,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
 import org.threeten.bp.Duration
+import org.threeten.bp.OffsetDateTime
 import javax.inject.Inject
 import com.toggl.common.R as CommonR
 
@@ -183,7 +184,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .mapNotNull { it.editableTimeEntry }
             .distinctUntilChanged { old, new -> old.ids == new.ids && old.startTime == new.startTime }
             .onEach {
-                scheduleTimeEntryIndicatorUpdate(it)
+                scheduleTimeEntryIndicatorAndLabelUpdate(it)
                 handleStartStopElementsState(it)
             }
             .launchIn(lifecycleScope)
@@ -294,54 +295,62 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         this@isEditableInProWorkspace.workspaces[this]?.isPro()
     } ?: false
 
-    private fun TextView.setDurationIfDifferent(duration: Duration) {
-        val newDurationText = duration.formatForDisplaying()
-        if (this.text != newDurationText) {
-            this.text = newDurationText
+    private fun TextView.setTextIfDifferent(newText: String) {
+        if (this.text != newText) {
+            this.text = newText
         }
     }
 
+    private fun EditableTimeEntry.isRepresentingGroup() = this.ids.size > 1
+    private fun EditableTimeEntry.isNotStarted() = this.ids.isEmpty()
     private fun EditableTimeEntry.getDurationForDisplaying() =
         when {
-            this.startTime == null || this.ids.isEmpty() -> Duration.ZERO
-            this.duration == null -> Duration.between(this.startTime, timeService.now())
-            else -> this.duration
+            this.duration != null -> this.duration
+            this.ids.isEmpty() && this.startTime == null -> Duration.ZERO
+            this.startTime != null -> Duration.between(this.startTime, timeService.now())
+            else -> throw IllegalStateException("Editable time entry must either have a duration, a start time or not be started yet (have no ids)")
         }
 
-    private fun scheduleTimeEntryIndicatorUpdate(editableTimeEntry: EditableTimeEntry) {
+    private fun scheduleTimeEntryIndicatorAndLabelUpdate(editableTimeEntry: EditableTimeEntry) {
         timeIndicatorScheduledUpdate?.cancel()
         timeIndicatorScheduledUpdate = lifecycleScope.launchWhenCreated {
             while (true) {
-                time_indicator.setDurationIfDifferent(editableTimeEntry.getDurationForDisplaying())
+                time_indicator.setTextIfDifferent(editableTimeEntry.getDurationForDisplaying().formatForDisplaying())
+
+                if (!editableTimeEntry.isRepresentingGroup() && editableTimeEntry.startTime == null) {
+                    setTextOnStartTimeLabels(timeService.now())
+                }
+
                 delay(elapsedTimeIndicatorUpdateDelayMs)
             }
         }
     }
 
+    private fun setTextOnTimeDateLabels(timeLabel: TextView, dateLabel: TextView, time: OffsetDateTime) {
+        timeLabel.setTextIfDifferent(time.formatForDisplayingTime())
+        dateLabel.setTextIfDifferent(time.formatForDisplayingDate())
+    }
+
+    private fun setTextOnStartTimeLabels(startTime: OffsetDateTime?) =
+        setTextOnTimeDateLabels(start_time_label, start_date_label, startTime ?: timeService.now())
+
     private fun handleStartStopElementsState(editableTimeEntry: EditableTimeEntry) {
         with(editableTimeEntry) {
 
-            if (startTime == null && duration != null) {
-                // we are handling a group
+            if (isRepresentingGroup()) {
                 extentedTimeOptions.forEach { it.isVisible = false }
                 return
             }
 
-            val startTime = startTime ?: throw IllegalStateException("Start time can be null only for groups")
-            val isUnstartedTimeEntry = ids.isEmpty()
+            setTextOnStartTimeLabels(startTime)
 
             hideableStopViews.forEach { it.isVisible = duration != null }
-
-            start_time_label.text = startTime.formatForDisplayingTime()
-            start_date_label.text = startTime.formatForDisplayingDate()
-
             when (duration) {
                 null -> stop_time_label.text =
-                    if (isUnstartedTimeEntry) getString(R.string.set_stop_time) else getString(R.string.stop)
+                    if (isNotStarted()) getString(R.string.set_stop_time) else getString(R.string.stop)
                 else -> {
-                    val endTime = startTime.plus(duration)
-                    stop_time_label.text = endTime.formatForDisplayingTime()
-                    stop_date_label.text = endTime.formatForDisplayingDate()
+                    val endTime = startTime!!.plus(duration)
+                    setTextOnTimeDateLabels(stop_time_label, stop_date_label, endTime)
                 }
             }
         }
