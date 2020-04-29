@@ -80,8 +80,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private lateinit var hideableStopViews: List<View>
     private lateinit var extentedTimeOptions: List<View>
     private lateinit var billableOptions: List<View>
-    private lateinit var startLabels: List<View>
-    private lateinit var stopLabels: List<View>
 
     override fun onAttach(context: Context) {
         (requireActivity().applicationContext as TimerComponentProvider)
@@ -138,8 +136,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             wheel_placeholder
         )
         billableOptions = listOf(billable_chip, billable_divider)
-        startLabels = listOf(start_time_label, start_date_label)
-        stopLabels = listOf(stop_time_label, stop_date_label)
 
         extentedTimeOptions
             .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
@@ -194,13 +190,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         billable_chip.addInterceptingOnClickListener {
             store.dispatch(StartEditAction.BillableTapped)
         }
-
-        mapOf(
-            start_time_label to DateTimePickMode.StartTime,
-            stop_time_label to DateTimePickMode.EndTime,
-            start_date_label to DateTimePickMode.StartDate,
-            stop_date_label to DateTimePickMode.EndDate
-        ).onEach { it.setActionOnLabel() }
 
         val bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
         with(bottomSheetBehavior) {
@@ -327,24 +316,31 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 return
             }
 
+            mapOf(
+                start_time_label to DateTimePickMode.StartTime,
+                stop_time_label to DateTimePickMode.EndTime,
+                start_date_label to DateTimePickMode.StartDate,
+                stop_date_label to DateTimePickMode.EndDate
+            ).onEach { it.setActionOnLabel() }
+
             setTextOnStartTimeLabels(startTime)
 
             hideableStopViews.forEach { it.isVisible = duration != null }
             when (duration) {
-                null -> stop_time_label.text =
-                    if (isNotStarted()) getString(R.string.set_stop_time) else getString(R.string.stop)
+                null -> {
+                    stop_time_label.text =
+                        if (isNotStarted()) getString(R.string.set_stop_time) else getString(R.string.stop)
+
+                    stop_time_label.setOnClickListener {
+                        // this is where 'set stop time' or 'stop' press should be handled
+                    }
+                }
                 else -> {
                     val endTime = startTime!!.plus(duration)
                     setTextOnTimeDateLabels(stop_time_label, stop_date_label, endTime)
                 }
             }
         }
-    }
-
-    private fun isStartStopLabelClickable(label: View) = when (label) {
-        in startLabels -> startLabels.all { it.isVisible }
-        in stopLabels -> stopLabels.all { it.isVisible }
-        else -> false
     }
 
     private fun Workspace.isPro() = this.features.indexOf(WorkspaceFeature.Pro) != -1
@@ -371,11 +367,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private fun Map.Entry<TextView, DateTimePickMode>.setActionOnLabel() {
         val (label, action) = this
         label.setOnClickListener {
-            if (isStartStopLabelClickable(label)) {
-                store.dispatch(StartEditAction.PickerTapped(action))
-            }
+            store.dispatch(StartEditAction.PickerTapped(action))
         }
-        return
     }
 
     private data class BottomControlPanelParams(val editableTimeEntry: EditableTimeEntry, val isProWorkspace: Boolean)
