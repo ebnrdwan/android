@@ -200,12 +200,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             stop_time_label to DateTimePickMode.EndTime,
             start_date_label to DateTimePickMode.StartDate,
             stop_date_label to DateTimePickMode.EndDate
-        ).onEach {
-            val (label, action) = it
-            label.setOnClickListener {
-                if (isStartStopLabelClickable(label)) store.dispatch(StartEditAction.PickerTapped(action))
-            }
-        }
+        ).onEach { it.setActionOnLabel() }
 
         val bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
         with(bottomSheetBehavior) {
@@ -371,6 +366,16 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         if (this.text != newText) {
             this.text = newText
         }
+    }
+
+    private fun Map.Entry<TextView, DateTimePickMode>.setActionOnLabel() {
+        val (label, action) = this
+        label.setOnClickListener {
+            if (isStartStopLabelClickable(label)) {
+                store.dispatch(StartEditAction.PickerTapped(action))
+            }
+        }
+        return
     }
 
     private data class BottomControlPanelParams(val editableTimeEntry: EditableTimeEntry, val isProWorkspace: Boolean)
