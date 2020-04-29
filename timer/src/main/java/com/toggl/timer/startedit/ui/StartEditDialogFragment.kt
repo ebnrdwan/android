@@ -40,6 +40,7 @@ import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.extensions.formatForDisplaying
 import com.toggl.timer.extensions.formatForDisplayingDate
 import com.toggl.timer.extensions.formatForDisplayingTime
+import com.toggl.timer.startedit.domain.DateTimePickMode
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditState
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
@@ -79,6 +80,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private lateinit var hideableStopViews: List<View>
     private lateinit var extentedTimeOptions: List<View>
     private lateinit var billableOptions: List<View>
+    private lateinit var startLabels: List<View>
+    private lateinit var stopLabels: List<View>
 
     override fun onAttach(context: Context) {
         (requireActivity().applicationContext as TimerComponentProvider)
@@ -135,6 +138,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             wheel_placeholder
         )
         billableOptions = listOf(billable_chip, billable_divider)
+        startLabels = listOf(start_time_label, start_date_label)
+        stopLabels = listOf(stop_time_label, stop_date_label)
 
         extentedTimeOptions
             .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
@@ -188,6 +193,18 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
         billable_chip.addInterceptingOnClickListener {
             store.dispatch(StartEditAction.BillableTapped)
+        }
+
+        mapOf(
+            start_time_label to DateTimePickMode.StartTime,
+            stop_time_label to DateTimePickMode.EndTime,
+            start_date_label to DateTimePickMode.StartDate,
+            stop_date_label to DateTimePickMode.EndDate
+        ).onEach {
+            val (label, action) = it
+            label.setOnClickListener {
+                if (isStartStopLabelClickable(label)) store.dispatch(StartEditAction.PickerTapped(action))
+            }
         }
 
         val bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
@@ -329,10 +346,17 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
+    private fun isStartStopLabelClickable(label: View) = when (label) {
+        in startLabels -> startLabels.all { it.isVisible }
+        in stopLabels -> stopLabels.all { it.isVisible }
+        else -> false
+    }
+
     private fun Workspace.isPro() = this.features.indexOf(WorkspaceFeature.Pro) != -1
     private fun StartEditState.isEditableInProWorkspace() = this.editableTimeEntry?.workspaceId?.run {
         this@isEditableInProWorkspace.workspaces[this]?.isPro()
     } ?: false
+
     private fun EditableTimeEntry.isRepresentingGroup() = this.ids.size > 1
     private fun EditableTimeEntry.isNotStarted() = this.ids.isEmpty()
     private fun EditableTimeEntry.getDurationForDisplaying() =
