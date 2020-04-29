@@ -75,6 +75,10 @@ class StartEditReducer @Inject constructor(
                         it.copy(description = if (it.description.isEmpty()) "#" else it.description + " #")
                     }
                 }
+            is StartEditAction.PickerTapped ->
+                state.mutateWithoutEffects {
+                    copy(dateTimePickMode = action.pickerMode)
+                }
             StartEditAction.DoneButtonTapped -> {
                 val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                 state.mutate { copy(editableTimeEntry = null) }
