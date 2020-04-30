@@ -321,7 +321,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 stop_time_label to DateTimePickMode.EndTime,
                 start_date_label to DateTimePickMode.StartDate,
                 stop_date_label to DateTimePickMode.EndDate
-            ).onEach { it.setActionOnLabel() }
+            ).onEach { it.setPickerTappedActionOnLabel() }
 
             setTextOnStartTimeLabels(startTime)
 
@@ -364,7 +364,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun Map.Entry<TextView, DateTimePickMode>.setActionOnLabel() {
+    private fun Map.Entry<TextView, DateTimePickMode>.setPickerTappedActionOnLabel() {
         val (label, action) = this
         label.setOnClickListener {
             store.dispatch(StartEditAction.PickerTapped(action))
