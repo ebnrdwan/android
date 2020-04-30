@@ -100,6 +100,9 @@ class StartEditReducer @Inject constructor(
                 state.mutateWithoutEffects { copy(autocompleteSuggestions = action.autocompleteSuggestions) }
             is StartEditAction.AutocompleteSuggestionTapped ->
                 noEffect()
+            StartEditAction.DateTimePickingCancelled -> {
+                state.mutateWithoutEffects { copy(dateTimePickMode = DateTimePickMode.None) }
+            }
         }
 
     private fun startTimeEntry(editableTimeEntry: EditableTimeEntry) =
