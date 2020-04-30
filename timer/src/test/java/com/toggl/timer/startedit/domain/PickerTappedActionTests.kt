@@ -13,7 +13,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.MethodSource
+import org.junit.jupiter.params.provider.EnumSource
 
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 @DisplayName("The PickerTapped action")
@@ -25,7 +25,7 @@ internal class PickerTappedActionTests {
     val reducer = StartEditReducer(repository, dispatcherProvider)
 
     @ParameterizedTest
-    @MethodSource("allPickerModes")
+    @EnumSource(DateTimePickMode::class)
     fun `sets the DateTimePickMode in state and returns no effect`(dateTimePickMode: DateTimePickMode) = runBlockingTest {
         reducer.testReduce(
             initialState = initialState,
@@ -34,10 +34,5 @@ internal class PickerTappedActionTests {
             state.dateTimePickMode shouldBe dateTimePickMode
             effects.shouldBeEmpty()
         }
-    }
-
-    companion object {
-        @JvmStatic
-        fun allPickerModes() = DateTimePickMode.values().toList()
     }
 }
