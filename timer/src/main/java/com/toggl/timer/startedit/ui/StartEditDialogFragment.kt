@@ -234,6 +234,11 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             }
             .launchIn(lifecycleScope)
 
+        wheel_duration_input.durationFlow
+            .distinctUntilChanged()
+            .onEach { store.dispatch(StartEditAction.DurationInputted(it)) }
+            .launchIn(lifecycleScope)
+
         billable_chip.addInterceptingOnClickListener {
             store.dispatch(StartEditAction.BillableTapped)
         }

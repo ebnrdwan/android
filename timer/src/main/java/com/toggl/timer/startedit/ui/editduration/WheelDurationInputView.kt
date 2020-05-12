@@ -44,7 +44,7 @@ class WheelDurationInputView @JvmOverloads constructor(
     private var isEditing = false
 
     private val durationChannel = ConflatedBroadcastChannel<Duration>()
-    private val durationFlow = durationChannel.asFlow()
+    val durationFlow = durationChannel.asFlow()
 
     init {
         val defaultFadedTextColor = ContextCompat.getColor(context, R.color.default_wheel_duration_input_faded_text_color)
