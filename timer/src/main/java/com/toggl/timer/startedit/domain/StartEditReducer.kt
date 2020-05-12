@@ -121,7 +121,11 @@ class StartEditReducer @Inject constructor(
                 state.mutateWithoutEffects {
                     when (action.autocompleteSuggestion) {
                         is AutocompleteSuggestion.TimeEntry -> modifyWithTimeEntrySuggestion(action.autocompleteSuggestion)
-                        else -> this
+                        is AutocompleteSuggestion.Project -> TODO("Not implemented yet")
+                        is AutocompleteSuggestion.Task -> TODO("Not implemented yet")
+                        is AutocompleteSuggestion.Tag -> TODO("Not implemented yet")
+                        is AutocompleteSuggestion.CreateProject -> TODO("Not implemented yet")
+                        is AutocompleteSuggestion.CreateTag -> TODO("Not implemented yet")
                     }
                 }
             }
