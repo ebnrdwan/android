@@ -1,6 +1,5 @@
 package com.toggl.timer.startedit.domain
 
-import com.google.android.gms.common.api.Api
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Tag
@@ -145,7 +144,7 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
     fun `matches multiple words for when the matches happen in different entities`() = runBlockingTest {
 
         val tasks = listOf(
-            Task(1, "ants",true, 1, 1, 1)
+            Task(1, "ants", true, 1, 1, 1)
         )
 
         val clients = listOf(
