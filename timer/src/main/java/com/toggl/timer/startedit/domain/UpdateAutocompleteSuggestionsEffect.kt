@@ -1,6 +1,5 @@
 package com.toggl.timer.startedit.domain
 
-import android.text.TextUtils
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.models.common.AutocompleteSuggestion
@@ -26,12 +25,12 @@ class UpdateAutocompleteSuggestionsEffect(
 
     override suspend fun execute(): StartEditAction.AutocompleteSuggestionsUpdated? =
         withContext(dispatcherProvider.computation) {
-            val words = TextUtils.split(query, wordSeparator)
+            val words = query.split(wordSeparator)
             val suggestions = fetchTimeEntrySuggestionsFor(words)
             StartEditAction.AutocompleteSuggestionsUpdated(suggestions)
         }
 
-    private fun fetchTimeEntrySuggestionsFor(words: Array<String>): List<AutocompleteSuggestion> {
+    private fun fetchTimeEntrySuggestionsFor(words: List<String>): List<AutocompleteSuggestion> {
 
         fun TimeEntry.projectOrClientNameContains(word: String) : Boolean {
             val project = projectId?.run(projects::get) ?: return false
