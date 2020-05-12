@@ -251,7 +251,8 @@ class StartEditReducer @Inject constructor(
                 description = timeEntrySuggestion.description,
                 projectId = timeEntrySuggestion.projectId,
                 tagIds = timeEntrySuggestion.tagIds,
-                billable = timeEntrySuggestion.billable
+                billable = timeEntrySuggestion.billable,
+                taskId = timeEntrySuggestion.taskId
             )
         }
 
