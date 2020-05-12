@@ -18,7 +18,8 @@ fun createTimeEntry(
     duration: Duration? = Duration.ofMinutes(2),
     billable: Boolean = false,
     projectId: Long? = null,
-    tags: List<Long> = emptyList()
+    tags: List<Long> = emptyList(),
+    workspaceId: Long = 1
 ) =
     TimeEntry(
         id,
@@ -26,7 +27,7 @@ fun createTimeEntry(
         startTime,
         duration,
         billable,
-        1,
+        workspaceId,
         projectId,
         null,
         false,
