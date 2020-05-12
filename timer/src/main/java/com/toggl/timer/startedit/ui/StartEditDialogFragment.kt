@@ -66,6 +66,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.take
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
@@ -88,6 +89,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         store.dispatch(StartEditAction.DateTimePickingCancelled)
     }
 
+    private val descriptionInputThrottleInMillis = 300L
     private val adapter = ChipAdapter(::onChipTapped)
 
     private val bottomSheetCallback = BottomSheetCallback()
@@ -214,6 +216,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         time_entry_description
             .onDescriptionChanged
             .distinctUntilChanged()
+            .sample(descriptionInputThrottleInMillis)
             .onEach { store.dispatch(it) }
             .launchIn(lifecycleScope)
 
