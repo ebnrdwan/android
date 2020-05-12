@@ -19,7 +19,8 @@ fun createTimeEntry(
     billable: Boolean = false,
     projectId: Long? = null,
     tags: List<Long> = emptyList(),
-    workspaceId: Long = 1
+    workspaceId: Long = 1,
+    taskId: Long? = null
 ) =
     TimeEntry(
         id,
@@ -29,7 +30,7 @@ fun createTimeEntry(
         billable,
         workspaceId,
         projectId,
-        null,
+        taskId,
         false,
         tags
     )

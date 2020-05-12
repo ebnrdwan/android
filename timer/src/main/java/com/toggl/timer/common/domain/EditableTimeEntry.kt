@@ -14,6 +14,7 @@ data class EditableTimeEntry(
     val duration: Duration? = null,
     val billable: Boolean = false,
     val projectId: Long? = null,
+    val taskId: Long? = null,
     val tagIds: List<Long> = listOf(),
     val editableProject: EditableProject? = null
 ) {
@@ -30,6 +31,7 @@ data class EditableTimeEntry(
                 billable = timeEntry.billable,
                 projectId = timeEntry.projectId,
                 tagIds = timeEntry.tagIds,
+                taskId = timeEntry.taskId,
                 editableProject = null
             )
 
@@ -43,6 +45,7 @@ data class EditableTimeEntry(
                 billable = sample.billable,
                 projectId = sample.projectId,
                 tagIds = sample.tagIds,
+                taskId = sample.taskId,
                 editableProject = null
             )
         }
