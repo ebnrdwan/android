@@ -36,6 +36,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 
@@ -106,42 +107,52 @@ class WheelForegroundView @JvmOverloads constructor(
     var maximumEndTime: OffsetDateTime = OffsetDateTime.MAX
 
     private var startTimeAngle = 0.0
-    var startTime: OffsetDateTime = OffsetDateTime.now()
-        set(value) {
-            if (field == value) return
-            field = value.coerceIn(minimumStartTime, maximumStartTime)
-
-            if (center.x.isNaN()) return
-
-            startTimeAngle = startTime.timeOfDay().toAngleOnTheDial().toPositiveAngle()
-            startTimePosition.updateWithPointOnCircumference(center, startTimeAngle, handleCapsPositionRadius)
-            arc.update(startTimeAngle, endTimeAngle)
-            wheelHandleDotIndicator.update(startTimeAngle, endTimeAngle)
-            startTimeChannel.offer(startTime)
-            invalidate()
-        }
-
     private var endTimeAngle = 0.0
-    var endTime: OffsetDateTime = OffsetDateTime.now()
-        get() = if (field < startTime) startTime else field
+
+    private var startAndEndTimeChannel = ConflatedBroadcastChannel<Pair<OffsetDateTime, OffsetDateTime>>(OffsetDateTime.now() to OffsetDateTime.now())
+
+    private var startAndEndTime: Pair<OffsetDateTime, OffsetDateTime>
+        get() = startAndEndTimeChannel.value
         set(value) {
-            if (field == value) return
-            field = value.coerceIn(minimumEndTime, maximumEndTime)
+            var (newStartTime, newEndTime) = value
 
-            if (center.x.isNaN()) return
+            if (startAndEndTimeChannel.value.first != newStartTime) {
+                newStartTime = newStartTime.coerceIn(minimumStartTime, maximumStartTime)
 
-            endTimeAngle = endTime.timeOfDay().toAngleOnTheDial().toPositiveAngle()
-            endTimePosition.updateWithPointOnCircumference(center, endTimeAngle, handleCapsPositionRadius)
+                if (center.x.isNaN()) return
+
+                startTimeAngle = newStartTime.timeOfDay().toAngleOnTheDial().toPositiveAngle()
+                startTimePosition.updateWithPointOnCircumference(center, startTimeAngle, handleCapsPositionRadius)
+            }
+            if (startAndEndTimeChannel.value.second != newEndTime) {
+                newEndTime = newEndTime.coerceIn(minimumEndTime, maximumEndTime)
+
+                if (center.x.isNaN()) return
+
+                endTimeAngle = newEndTime.timeOfDay().toAngleOnTheDial().toPositiveAngle()
+                endTimePosition.updateWithPointOnCircumference(center, endTimeAngle, handleCapsPositionRadius)
+            }
+
             arc.update(startTimeAngle, endTimeAngle)
             wheelHandleDotIndicator.update(startTimeAngle, endTimeAngle)
-            endTimeChannel.offer(endTime)
+
+            startAndEndTimeChannel.offer(newStartTime to newEndTime)
             invalidate()
         }
 
-    private val startTimeChannel = ConflatedBroadcastChannel<OffsetDateTime>()
-    private val endTimeChannel = ConflatedBroadcastChannel<OffsetDateTime>()
-    val startTimeFlow = startTimeChannel.asFlow()
-    val endTimeFlow = endTimeChannel.asFlow()
+    var startTime: OffsetDateTime
+        get() = startAndEndTimeChannel.value.first
+        set(value) {
+            startAndEndTime = value to endTime
+        }
+
+    var endTime: OffsetDateTime
+        get() = startAndEndTimeChannel.value.second
+        set(value) {
+            startAndEndTime = startTime to value
+        }
+
+    val startAndEndTimeFlow = startAndEndTimeChannel.asFlow().distinctUntilChanged()
 
     private val isEditingChannel = ConflatedBroadcastChannel(false)
     val isEditingFlow = isEditingChannel.asFlow()
@@ -398,22 +409,23 @@ class WheelForegroundView @JvmOverloads constructor(
 
     private fun updateEditedTime(diff: Duration) {
         var giveFeedback = false
-        val duration = endTime.absoluteDurationBetween(startTime)
-
-        if (updateType == WheelUpdateType.EditStartTime || updateType == WheelUpdateType.EditBothAtOnce) {
-            val nextStartTime = (startTime + diff).roundToClosestMinute()
-            giveFeedback = nextStartTime != startTime
-            startTime = nextStartTime
-        }
-
-        if (updateType == WheelUpdateType.EditEndTime) {
-            val nextEndTime = (endTime + diff).roundToClosestMinute()
-            giveFeedback = nextEndTime != endTime
-            endTime = nextEndTime
-        }
 
         if (updateType == WheelUpdateType.EditBothAtOnce) {
-            endTime = startTime + duration
+            val nextEndTime = (endTime + diff).roundToClosestMinute()
+            val nextStartTime = (startTime + diff).roundToClosestMinute()
+            giveFeedback = nextStartTime != startTime
+            startAndEndTime = nextStartTime to nextEndTime
+        } else {
+            if (updateType == WheelUpdateType.EditStartTime) {
+                val nextStartTime = (startTime + diff).roundToClosestMinute()
+                giveFeedback = nextStartTime != startTime
+                startTime = nextStartTime
+            }
+            if (updateType == WheelUpdateType.EditEndTime) {
+                val nextEndTime = (endTime + diff).roundToClosestMinute()
+                giveFeedback = nextEndTime != endTime
+                endTime = nextEndTime
+            }
         }
 
         if (giveFeedback) {

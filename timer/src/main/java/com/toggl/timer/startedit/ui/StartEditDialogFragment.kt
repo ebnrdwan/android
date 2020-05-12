@@ -55,7 +55,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNot
@@ -214,8 +213,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .onEach { nested_scrollview.requestDisallowInterceptTouchEvent(it) }
             .launchIn(lifecycleScope)
 
-        wheel_foreground.startTimeFlow.combine(wheel_foreground.endTimeFlow) { start, end -> start to end }
-            .distinctUntilChanged()
+        wheel_foreground.startAndEndTimeFlow
             .scanReduce { (prevStart, prevEnd), (start, end) ->
 
                 val prevDuration = Duration.between(prevStart, prevEnd)
