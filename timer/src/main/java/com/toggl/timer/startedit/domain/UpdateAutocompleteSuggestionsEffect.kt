@@ -35,28 +35,28 @@ class UpdateAutocompleteSuggestionsEffect(
 
         fun TimeEntry.projectOrClientNameContains(word: String) : Boolean {
             val project = projectId?.run(projects::get) ?: return false
-            if (project.name.contains(word))
+            if (project.name.contains(word, true))
                 return true
 
             val client = project.clientId?.run(clients::get) ?: return false
-            return client.name.contains(word)
+            return client.name.contains(word, true)
         }
 
         fun TimeEntry.tagNamesContain(word: String) : Boolean {
             if (tagIds.isEmpty())
                 return false
 
-            return tagIds.mapNotNull(tags::get).any { tag -> tag.name.contains(word) }
+            return tagIds.mapNotNull(tags::get).any { tag -> tag.name.contains(word, true) }
         }
 
         fun TimeEntry.taskNameContains(word: String) : Boolean {
             val task = taskId?.run(tasks::get) ?: return false
-            return task.name.contains(word)
+            return task.name.contains(word, true)
         }
 
         return words.fold(timeEntries.values) { timeEntries, word ->
             timeEntries.filter { timeEntry ->
-                timeEntry.description.contains(word) ||
+                timeEntry.description.contains(word, true) ||
                 timeEntry.projectOrClientNameContains(word) ||
                 timeEntry.tagNamesContain(word) ||
                 timeEntry.taskNameContains(word)
