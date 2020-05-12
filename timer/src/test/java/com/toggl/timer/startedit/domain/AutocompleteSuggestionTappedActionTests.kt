@@ -7,6 +7,7 @@ import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduce
+import com.toggl.timer.common.testReduceNoEffects
 import com.toggl.timer.common.testReduceState
 import io.kotlintest.shouldBe
 import io.mockk.mockk
@@ -24,15 +25,6 @@ import java.util.stream.Stream
 internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
     val initialState = createInitialState()
     val reducer = createReducer()
-
-    @Test
-    fun `should return no effect`() = runBlockingTest {
-        reducer.testReduce(
-            initialState,
-            action = StartEditAction.AutocompleteSuggestionTapped(mockk()),
-            testCase = ::assertNoEffectsWereReturned
-        )
-    }
 
     @Nested
     @DisplayName("When a TimeEntry suggestion is tapped")
@@ -54,10 +46,22 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                         billable = timeEntrySuggestion.billable,
                         projectId = timeEntrySuggestion.projectId,
                         tagIds = timeEntrySuggestion.tagIds,
-                        workspaceId = timeEntrySuggestion.workspaceId
+                        workspaceId = timeEntrySuggestion.workspaceId,
+                        taskId = timeEntrySuggestion.taskId
                     )
                 )
             }
+        }
+
+        @ParameterizedTest
+        @MethodSource("timeEntries")
+        fun `should return no effect`(timeEntrySuggestion: TimeEntry) = runBlockingTest {
+            val suggestion = AutocompleteSuggestion.TimeEntry(timeEntrySuggestion)
+
+            reducer.testReduceNoEffects(
+                initialState,
+                action = StartEditAction.AutocompleteSuggestionTapped(suggestion)
+            )
         }
     }
 
@@ -71,6 +75,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 createTimeEntry(40, billable = false),
                 createTimeEntry(50, projectId = 10),
                 createTimeEntry(60, workspaceId = 10),
+                createTimeEntry(80, taskId = 10),
                 createTimeEntry(70, tags = listOf(10, 20)),
                 createTimeEntry(
                     80,
@@ -78,7 +83,8 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                     billable = true,
                     projectId = 20,
                     workspaceId = 20,
-                    tags = listOf(30)
+                    tags = listOf(30),
+                    taskId = 20
                 )
             )
         }
