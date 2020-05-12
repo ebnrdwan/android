@@ -55,6 +55,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNot
@@ -62,6 +63,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.scanReduce
 import kotlinx.coroutines.flow.take
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
@@ -210,6 +212,26 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         wheel_foreground.isEditingFlow
             .distinctUntilChanged()
             .onEach { nested_scrollview.requestDisallowInterceptTouchEvent(it) }
+            .launchIn(lifecycleScope)
+
+        wheel_foreground.startTimeFlow.combine(wheel_foreground.endTimeFlow) { start, end -> start to end }
+            .distinctUntilChanged()
+            .scanReduce { (prevStart, prevEnd), (start, end) ->
+
+                val prevDuration = Duration.between(prevStart, prevEnd)
+                val duration = Duration.between(start, end)
+
+                store.dispatch(
+                    when {
+                        prevDuration == duration -> StartEditAction.WheelOffsettedStartTime(start)
+                        prevStart != start -> StartEditAction.WheelChangedStartTime(start)
+                        prevEnd != end -> StartEditAction.WheelChangedEndTime(duration)
+                        else -> throw IllegalStateException("This should never happen")
+                    }
+                )
+
+                start to end
+            }
             .launchIn(lifecycleScope)
 
         billable_chip.addInterceptingOnClickListener {
